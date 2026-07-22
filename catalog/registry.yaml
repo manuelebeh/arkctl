@@ -1,0 +1,686 @@
+schema_version: 1
+name: ark-default
+version: 0.4.0
+description: Built-in Ark catalog (architectures, project types, local + remote agents, presets)
+
+architectures:
+  - id: feature-first
+    name: Feature-first
+    version: 0.1.0
+    path: architectures/feature-first
+    source: local
+
+projects:
+  - id: ts-lib
+    name: TypeScript library
+    version: 0.1.0
+    implements: feature-first
+    path: projects/ts-lib
+    source: local
+    stacks: [lib, typescript]
+
+agents:
+  # --- Local personas ---
+  - id: feature-owner
+    name: Feature Owner
+    version: 0.1.0
+    kind: local
+    path: agents/feature-owner
+    source: local
+    stacks: ["*"]
+    description: Implements features within architecture boundaries
+
+  - id: architecture-guardian
+    name: Architecture Guardian
+    version: 0.1.0
+    kind: local
+    path: agents/architecture-guardian
+    source: local
+    stacks: ["*"]
+    description: Reviews structure against the architecture contract
+
+  # --- Local general guidelines ---
+  - id: no-ai-slop
+    name: No AI Slop
+    version: 0.1.0
+    kind: guidelines
+    path: agents/no-ai-slop
+    source: local
+    stacks: ["*"]
+    description: Prose rules: write like a clear human
+    install:
+      merge_into: AGENTS.md
+
+  - id: no-ai-slop-skill
+    name: No AI Slop Skill
+    version: 0.1.0
+    kind: skill
+    path: agents/no-ai-slop-skill
+    source: local
+    stacks: ["*"]
+    description: Rewrite skill (phrases, patterns, structures)
+    install:
+      target: .agents/skills/no-ai-slop
+      merge_into: AGENTS.md
+
+  - id: llm-guidelines
+    name: LLM Guidelines
+    version: 0.1.0
+    kind: guidelines
+    path: agents/llm-guidelines
+    source: local
+    stacks: ["*"]
+    description: Communication and code-generation behavior for agents
+    install:
+      merge_into: AGENTS.md
+
+  - id: codequality
+    name: Code Quality
+    version: 0.1.0
+    kind: guidelines
+    path: agents/codequality
+    source: local
+    stacks: ["*"]
+    description: Surgical edits: no inventions, preserve existing code
+    install:
+      merge_into: AGENTS.md
+
+  - id: clean-code
+    name: Clean Code
+    version: 0.1.0
+    kind: guidelines
+    path: agents/clean-code
+    source: local
+    stacks: ["*"]
+    description: Names, DRY, SRP, testing, and maintainable structure
+    install:
+      merge_into: AGENTS.md
+
+  # --- Local Laravel pack (stack-filtered) ---
+  - id: laravel-best-practices
+    name: Laravel Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/laravel-best-practices
+    source: local
+    stacks: [laravel, php]
+    description: PHP/Laravel structure, validation, security, performance
+    install:
+      merge_into: AGENTS.md
+
+  - id: laravel-database
+    name: Laravel Database
+    version: 0.1.0
+    kind: guidelines
+    path: agents/laravel-database
+    source: local
+    stacks: [laravel, php]
+    description: MySQL + Eloquent migrations, models, queries, seeders
+    install:
+      merge_into: AGENTS.md
+
+  # --- Remote guidelines ---
+  - id: karpathy
+    name: Karpathy Guidelines
+    version: 0.1.0
+    kind: guidelines
+    source: github
+    github: multica-ai/andrej-karpathy-skills//CLAUDE.md@main
+    stacks: ["*"]
+    exclusive_group: minimalism
+    description: Think / simplicity / surgical changes / goal-driven execution
+    install:
+      merge_into: AGENTS.md
+
+  - id: ponytail
+    name: Ponytail
+    version: 0.1.0
+    kind: guidelines
+    source: github
+    github: DietrichGebert/ponytail//AGENTS.md@main
+    stacks: ["*"]
+    exclusive_group: minimalism
+    description: Lazy-senior ladder: write only the code that must exist
+    install:
+      merge_into: AGENTS.md
+
+  # --- Remote Agent Skills ---
+  - id: hallmark
+    name: Hallmark
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: Nutlope/hallmark//skills/hallmark@main
+    stacks: [ui, react, web]
+    description: Anti-AI-slop design skill (build / audit / redesign / study)
+    install:
+      target: .agents/skills/hallmark
+      merge_into: AGENTS.md
+
+  - id: vercel-react-best-practices
+    name: Vercel React Best Practices
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: vercel-labs/agent-skills//skills/react-best-practices@main
+    stacks: [react, next, web]
+    description: React/Next performance rules from Vercel Engineering
+    install:
+      target: .agents/skills/react-best-practices
+      merge_into: AGENTS.md
+
+  - id: vercel-composition-patterns
+    name: Vercel Composition Patterns
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: vercel-labs/agent-skills//skills/composition-patterns@main
+    stacks: [react, web]
+    description: Compound components and scalable React composition
+    install:
+      target: .agents/skills/composition-patterns
+      merge_into: AGENTS.md
+
+  - id: vercel-web-design-guidelines
+    name: Vercel Web Design Guidelines
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: vercel-labs/agent-skills//skills/web-design-guidelines@main
+    stacks: [ui, web]
+    description: A11y / UX / interface audit rules
+    install:
+      target: .agents/skills/web-design-guidelines
+      merge_into: AGENTS.md
+
+  - id: vercel-react-native
+    name: Vercel React Native Skills
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: vercel-labs/agent-skills//skills/react-native-skills@main
+    stacks: [react-native, expo, mobile]
+    description: React Native / Expo performance and architecture patterns
+    install:
+      target: .agents/skills/react-native-skills
+      merge_into: AGENTS.md
+
+  # --- Tool-backed skill ---
+  - id: react-doctor
+    name: React Doctor
+    version: 0.1.0
+    kind: tool-skill
+    source: github
+    github: millionco/react-doctor//skills/react-doctor@main
+    stacks: [react, next, expo, react-native, web]
+    description: Deterministic React scanner + agent skill (requires npx react-doctor)
+    install:
+      target: .agents/skills/react-doctor
+      merge_into: AGENTS.md
+      post:
+        - npx --yes react-doctor@latest install --yes
+
+  # --- Matt Pocock skills (Agent Skills format) ---
+  - id: matt-setup
+    name: Setup Matt Pocock Skills
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/setup-matt-pocock-skills@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: One-time repo setup (issue tracker, triage labels, CONTEXT.md layout)
+    install:
+      target: .agents/skills/setup-matt-pocock-skills
+
+  - id: matt-ask
+    name: Ask Matt
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/ask-matt@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Router: which Matt skill/flow fits the situation
+    install:
+      target: .agents/skills/ask-matt
+
+  - id: matt-grilling
+    name: Grilling
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/productivity/grilling@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Model-invoked interview loop behind grill-me / grill-with-docs
+    install:
+      target: .agents/skills/grilling
+
+  - id: matt-grill-me
+    name: Grill Me
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/productivity/grill-me@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Relentless interview until every decision branch is resolved
+    install:
+      target: .agents/skills/grill-me
+
+  - id: matt-grill-with-docs
+    name: Grill With Docs
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/grill-with-docs@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Grilling + domain language (CONTEXT.md / ADRs)
+    install:
+      target: .agents/skills/grill-with-docs
+
+  - id: matt-tdd
+    name: TDD
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/tdd@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Red-green-refactor with seam-based tests
+    install:
+      target: .agents/skills/tdd
+
+  - id: matt-diagnosing-bugs
+    name: Diagnosing Bugs
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/diagnosing-bugs@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Reproduce → minimise → hypothesise → instrument → fix
+    install:
+      target: .agents/skills/diagnosing-bugs
+
+  - id: matt-code-review
+    name: Code Review
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/code-review@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Standards + spec review axes (parallel sub-agents)
+    install:
+      target: .agents/skills/code-review
+
+  - id: matt-codebase-design
+    name: Codebase Design
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/codebase-design@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Deep modules: lots of behavior behind a small interface
+    install:
+      target: .agents/skills/codebase-design
+
+  - id: matt-domain-modeling
+    name: Domain Modeling
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/domain-modeling@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Sharpen glossary / CONTEXT.md / ADRs
+    install:
+      target: .agents/skills/domain-modeling
+
+  - id: matt-to-spec
+    name: To Spec
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/to-spec@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Turn the current conversation into a published spec
+    install:
+      target: .agents/skills/to-spec
+
+  - id: matt-to-tickets
+    name: To Tickets
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/to-tickets@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Break a plan into tracer-bullet tickets with blocking edges
+    install:
+      target: .agents/skills/to-tickets
+
+  - id: matt-implement
+    name: Implement
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/implement@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Build from spec/tickets, driving TDD + code-review
+    install:
+      target: .agents/skills/implement
+
+  - id: matt-handoff
+    name: Handoff
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/productivity/handoff@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Compact the session so another agent can continue
+    install:
+      target: .agents/skills/handoff
+
+  - id: matt-improve-architecture
+    name: Improve Codebase Architecture
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/improve-codebase-architecture@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Find deepening opportunities and grill through one
+    install:
+      target: .agents/skills/improve-codebase-architecture
+
+  - id: matt-triage
+    name: Triage
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: mattpocock/skills//skills/engineering/triage@main
+    stacks: ["*"]
+    group: matt-pocock
+    description: Move issues through a triage state machine
+    install:
+      target: .agents/skills/triage
+
+  # gstack (Garry Tan): lite skills + full setup
+  - id: gstack-office-hours
+    name: gstack Office Hours
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//office-hours@main
+    stacks: ["*"]
+    group: gstack
+    description: Reframes the product idea before you write code
+    install:
+      target: .agents/skills/gstack-office-hours
+
+  - id: gstack-plan-ceo-review
+    name: gstack Plan CEO Review
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//plan-ceo-review@main
+    stacks: ["*"]
+    group: gstack
+    description: CEO-level review: find the 10-star product in the request
+    install:
+      target: .agents/skills/gstack-plan-ceo-review
+
+  - id: gstack-plan-eng-review
+    name: gstack Plan Eng Review
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//plan-eng-review@main
+    stacks: ["*"]
+    group: gstack
+    description: Lock architecture, data flow, edge cases, and tests
+    install:
+      target: .agents/skills/gstack-plan-eng-review
+
+  - id: gstack-plan-design-review
+    name: gstack Plan Design Review
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//plan-design-review@main
+    stacks: ["*"]
+    group: gstack
+    description: Rate design dimensions and explain what a 10 looks like
+    install:
+      target: .agents/skills/gstack-plan-design-review
+
+  - id: gstack-autoplan
+    name: gstack Autoplan
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//autoplan@main
+    stacks: ["*"]
+    group: gstack
+    description: One command: CEO → design → eng → DX review
+    install:
+      target: .agents/skills/gstack-autoplan
+
+  - id: gstack-spec
+    name: gstack Spec
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//spec@main
+    stacks: ["*"]
+    group: gstack
+    description: Turn vague intent into a precise executable spec
+    install:
+      target: .agents/skills/gstack-spec
+
+  - id: gstack-review
+    name: gstack Review
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//review@main
+    stacks: ["*"]
+    group: gstack
+    description: Pre-landing PR review: bugs that pass CI but break in prod
+    install:
+      target: .agents/skills/gstack-review
+
+  - id: gstack-investigate
+    name: gstack Investigate
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//investigate@main
+    stacks: ["*"]
+    group: gstack
+    description: Systematic root-cause debugging: no fixes without investigation
+    install:
+      target: .agents/skills/gstack-investigate
+
+  - id: gstack-cso
+    name: gstack CSO
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//cso@main
+    stacks: ["*"]
+    group: gstack
+    description: OWASP Top 10 + STRIDE security audit
+    install:
+      target: .agents/skills/gstack-cso
+
+  - id: gstack-careful
+    name: gstack Careful
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//careful@main
+    stacks: ["*"]
+    group: gstack
+    description: Warn before destructive commands
+    install:
+      target: .agents/skills/gstack-careful
+
+  - id: gstack-freeze
+    name: gstack Freeze
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//freeze@main
+    stacks: ["*"]
+    group: gstack
+    description: Lock edits to one directory
+    install:
+      target: .agents/skills/gstack-freeze
+
+  - id: gstack-guard
+    name: gstack Guard
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//guard@main
+    stacks: ["*"]
+    group: gstack
+    description: Activate careful + freeze together
+    install:
+      target: .agents/skills/gstack-guard
+
+  - id: gstack-ship
+    name: gstack Ship
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//ship@main
+    stacks: ["*"]
+    group: gstack
+    description: Run tests, review, push, open PR
+    install:
+      target: .agents/skills/gstack-ship
+
+  - id: gstack-document-release
+    name: gstack Document Release
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//document-release@main
+    stacks: ["*"]
+    group: gstack
+    description: Update docs to match what you just shipped
+    install:
+      target: .agents/skills/gstack-document-release
+
+  - id: gstack-retro
+    name: gstack Retro
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//retro@main
+    stacks: ["*"]
+    group: gstack
+    description: Weekly engineering retrospective
+    install:
+      target: .agents/skills/gstack-retro
+
+  - id: gstack-health
+    name: gstack Health
+    version: 0.1.0
+    kind: skill
+    source: github
+    github: garrytan/gstack//health@main
+    stacks: ["*"]
+    group: gstack
+    description: Code quality dashboard (types, lint, tests, dead code)
+    install:
+      target: .agents/skills/gstack-health
+
+  - id: gstack-full
+    name: gstack Full (official setup)
+    version: 0.1.0
+    kind: tool-skill
+    source: github
+    github: garrytan/gstack//AGENTS.md@main
+    stacks: ["*"]
+    group: gstack
+    description: >
+      Full suite via official setup (Bun, browse/QA binary, multi-host).
+      Prefer this when you want /qa /browse /ship end-to-end.
+    install:
+      target: .agents/skills/gstack-full
+      post:
+        - git clone --single-branch --depth 1 https://github.com/garrytan/gstack.git ~/.claude/skills/gstack
+        - cd ~/.claude/skills/gstack && ./setup
+
+presets:
+  - id: matt-pocock-core
+    name: Matt Pocock Core
+    description: >
+      Engineering workflow: setup, grill, TDD, review, specs, implement.
+      Run /setup-matt-pocock-skills once after create.
+    agents:
+      - matt-setup
+      - matt-ask
+      - matt-grilling
+      - matt-grill-me
+      - matt-grill-with-docs
+      - matt-tdd
+      - matt-diagnosing-bugs
+      - matt-code-review
+      - matt-codebase-design
+      - matt-domain-modeling
+      - matt-to-spec
+      - matt-to-tickets
+      - matt-implement
+      - matt-handoff
+    notes:
+      - "In your coding agent, run /setup-matt-pocock-skills once to configure issue tracker + CONTEXT.md."
+      - "Start features with /grill-with-docs (or /grill-me), then /to-spec → /to-tickets → /implement."
+
+  - id: gstack-lite
+    name: gstack Lite
+    description: >
+      Portable Markdown skills from gstack (plan, review, investigate, safety, ship).
+      No Bun/browser required. For /qa and /browse, use preset gstack-full instead.
+    agents:
+      - gstack-office-hours
+      - gstack-plan-ceo-review
+      - gstack-plan-eng-review
+      - gstack-plan-design-review
+      - gstack-autoplan
+      - gstack-spec
+      - gstack-review
+      - gstack-investigate
+      - gstack-cso
+      - gstack-careful
+      - gstack-freeze
+      - gstack-guard
+      - gstack-ship
+      - gstack-document-release
+      - gstack-retro
+      - gstack-health
+    notes:
+      - "Skills land in .agents/skills/gstack-*. Invoke by name (e.g. /office-hours) if your agent supports skills."
+      - "Browser QA (/qa, /browse) is not included. Use --preset gstack-full for the official setup."
+
+  - id: gstack-full
+    name: gstack Full
+    description: >
+      Official gstack install (clone + ./setup). Requires Bun. Enables browse/QA and multi-host adapters.
+    agents:
+      - gstack-full
+    notes:
+      - "Requires Bun (https://bun.sh). Official setup also supports Codex/Cursor/OpenCode via ./setup --host <name>."
+      - "After setup, add a gstack section to CLAUDE.md/AGENTS.md listing available slash skills."
+      - "Quick path: /office-hours → /autoplan → implement → /review → /ship → /qa on staging."

@@ -1,0 +1,10 @@
+recommended_agents:
+  - id: feature-owner
+    reason: Implements a feature within feature-first boundaries
+  - id: architecture-guardian
+    reason: Reviews structure and imports against the architecture contract
+
+brief: |
+  Follow the feature-first architecture contract.
+  New domain behavior goes in features/<name>, not shared/.
+  Cross-feature access only via features/<name> public API (index).

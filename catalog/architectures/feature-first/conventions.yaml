@@ -1,0 +1,28 @@
+naming:
+  features:
+    pattern: "^[a-z][a-z0-9_]*$"
+  files:
+    components: "PascalCase"
+    hooks: "^use[A-Z].*"
+    tests: "**/*.{test,spec}.*"
+
+placement:
+  ui_for_feature: features/:feature/ui
+  data_for_feature: features/:feature/data
+  cross_feature_imports: false
+  public_api: features/:feature/index.*
+
+imports:
+  deny:
+    - from: features/*
+      to: features/*/ui/**
+    - from: features/*
+      to: features/*/data/**
+  allow:
+    - from: features/*
+      to: features/*/index.*
+    - from: features/*
+      to: shared/**
+
+tests:
+  colocate: true

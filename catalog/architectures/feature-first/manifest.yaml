@@ -1,0 +1,29 @@
+schema_version: 1
+
+id: feature-first
+name: Feature-first
+version: 0.1.0
+description: >
+  Domain code lives in features/<name>. Shared code is truly cross-cutting.
+  Cross-feature access goes through each feature's public API only.
+
+requires:
+  project_manifest: ">=1"
+
+applies_to:
+  stacks: [web, mobile, api, lib]
+  languages: ["*"]
+
+files:
+  layout: LAYOUT.md
+  tree: tree.schema.yaml
+  conventions: conventions.yaml
+  agent_hints: agents.hints.yaml
+
+checks:
+  - tree
+  - conventions
+  - forbidden_paths
+  - required_files
+
+default_severity: error

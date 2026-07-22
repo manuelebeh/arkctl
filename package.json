@@ -1,0 +1,42 @@
+{
+  "name": "ark",
+  "version": "0.4.0",
+  "description": "Create projects from remote catalogs with enforceable architecture contracts",
+  "type": "module",
+  "bin": {
+    "ark": "./bin/ark.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "catalog"
+  ],
+  "scripts": {
+    "dev": "tsx src/cli.ts",
+    "build": "tsup",
+    "check": "tsc --noEmit",
+    "start": "node dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "cli",
+    "scaffold",
+    "architecture",
+    "templates",
+    "agents"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^1.7.0",
+    "citty": "^0.2.2",
+    "yaml": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "tsx": "^4.23.1",
+    "typescript": "^7.0.2"
+  }
+}
