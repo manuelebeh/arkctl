@@ -19,6 +19,22 @@ projects:
     source: local
     stacks: [lib, typescript]
 
+  - id: react-next
+    name: React / Next app
+    version: 0.1.0
+    implements: feature-first
+    path: projects/react-next
+    source: local
+    stacks: [react, next, web, ui, typescript]
+
+  - id: laravel-app
+    name: Laravel app
+    version: 0.1.0
+    implements: feature-first
+    path: projects/laravel-app
+    source: local
+    stacks: [laravel, php]
+
 agents:
   # --- Local personas ---
   - id: feature-owner
@@ -47,7 +63,7 @@ agents:
     path: agents/no-ai-slop
     source: local
     stacks: ["*"]
-    description: Prose rules: write like a clear human
+    description: "Prose rules: write like a clear human"
     install:
       merge_into: AGENTS.md
 
@@ -81,7 +97,7 @@ agents:
     path: agents/codequality
     source: local
     stacks: ["*"]
-    description: Surgical edits: no inventions, preserve existing code
+    description: "Surgical edits: no inventions, preserve existing code"
     install:
       merge_into: AGENTS.md
 
@@ -140,7 +156,7 @@ agents:
     github: DietrichGebert/ponytail//AGENTS.md@main
     stacks: ["*"]
     exclusive_group: minimalism
-    description: Lazy-senior ladder: write only the code that must exist
+    description: "Lazy-senior ladder: write only the code that must exist"
     install:
       merge_into: AGENTS.md
 
@@ -241,7 +257,7 @@ agents:
     github: mattpocock/skills//skills/engineering/ask-matt@main
     stacks: ["*"]
     group: matt-pocock
-    description: Router: which Matt skill/flow fits the situation
+    description: "Router: which Matt skill/flow fits the situation"
     install:
       target: .agents/skills/ask-matt
 
@@ -325,7 +341,7 @@ agents:
     github: mattpocock/skills//skills/engineering/codebase-design@main
     stacks: ["*"]
     group: matt-pocock
-    description: Deep modules: lots of behavior behind a small interface
+    description: "Deep modules: lots of behavior behind a small interface"
     install:
       target: .agents/skills/codebase-design
 
@@ -434,7 +450,7 @@ agents:
     github: garrytan/gstack//plan-ceo-review@main
     stacks: ["*"]
     group: gstack
-    description: CEO-level review: find the 10-star product in the request
+    description: "CEO-level review: find the 10-star product in the request"
     install:
       target: .agents/skills/gstack-plan-ceo-review
 
@@ -470,7 +486,7 @@ agents:
     github: garrytan/gstack//autoplan@main
     stacks: ["*"]
     group: gstack
-    description: One command: CEO → design → eng → DX review
+    description: "One command: CEO → design → eng → DX review"
     install:
       target: .agents/skills/gstack-autoplan
 
@@ -494,7 +510,7 @@ agents:
     github: garrytan/gstack//review@main
     stacks: ["*"]
     group: gstack
-    description: Pre-landing PR review: bugs that pass CI but break in prod
+    description: "Pre-landing PR review: bugs that pass CI but break in prod"
     install:
       target: .agents/skills/gstack-review
 
@@ -506,7 +522,7 @@ agents:
     github: garrytan/gstack//investigate@main
     stacks: ["*"]
     group: gstack
-    description: Systematic root-cause debugging: no fixes without investigation
+    description: "Systematic root-cause debugging: no fixes without investigation"
     install:
       target: .agents/skills/gstack-investigate
 

@@ -35,7 +35,10 @@ npm install
 npm run build
 node dist/cli.js list
 node dist/cli.js list --stack lib
+node dist/cli.js list --stack react,next
 node dist/cli.js create demo --project ts-lib --agents karpathy,feature-owner
+node dist/cli.js create web --project react-next
+node dist/cli.js create api --project laravel-app
 node dist/cli.js check ./demo
 ```
 
@@ -61,6 +64,16 @@ node dist/cli.js list --group gstack
 ```
 
 Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans ton agent.
+
+## Project types
+
+| Id | Stacks | Unlocks (interactive) |
+|---|---|---|
+| `ts-lib` | `lib`, `typescript` | general agents only |
+| `react-next` | `react`, `next`, `web`, `ui`, `typescript` | Hallmark, Vercel React/Next skills, React Doctor |
+| `laravel-app` | `laravel`, `php` | Laravel pack |
+
+TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet.
 
 ## Built-in local guidelines
 
