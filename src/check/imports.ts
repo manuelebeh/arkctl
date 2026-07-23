@@ -12,6 +12,7 @@ import { resolveSeverity } from "./severity.js";
 const JS_SOURCE_EXT = /\.(tsx?|jsx?|mts|cts)$/;
 const PHP_SOURCE_EXT = /\.php$/;
 const PY_SOURCE_EXT = /\.py$/;
+const GO_SOURCE_EXT = /\.go$/;
 const SKIP_DIR =
   /^(node_modules|dist|vendor|\.git|\.venv|venv|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.tox)(\/|$)/;
 
@@ -65,9 +66,12 @@ export function checkImports(
     (f) =>
       (JS_SOURCE_EXT.test(f) ||
         PHP_SOURCE_EXT.test(f) ||
-        PY_SOURCE_EXT.test(f)) &&
+        PY_SOURCE_EXT.test(f) ||
+        GO_SOURCE_EXT.test(f)) &&
       !SKIP_DIR.test(f),
   );
+
+  const goModulePath = readGoModulePath(projectRoot);
 
   for (const file of sourceFiles) {
     const abs = join(projectRoot, file);
@@ -78,11 +82,13 @@ export function checkImports(
       continue;
     }
 
-    const targets = PY_SOURCE_EXT.test(file)
-      ? extractPyImportTargets(file, content, files)
-      : PHP_SOURCE_EXT.test(file)
-        ? extractPhpImportTargets(content, files)
-        : extractJsImportTargets(file, content, files);
+    const targets = GO_SOURCE_EXT.test(file)
+      ? extractGoImportTargets(content, files, goModulePath)
+      : PY_SOURCE_EXT.test(file)
+        ? extractPyImportTargets(file, content, files)
+        : PHP_SOURCE_EXT.test(file)
+          ? extractPhpImportTargets(content, files)
+          : extractJsImportTargets(file, content, files);
 
     for (const target of targets) {
       const fromModule = modulesPath
@@ -288,6 +294,99 @@ function extractImportSpecifiers(content: string): string[] {
   let match: RegExpExecArray | null;
   while ((match = IMPORT_RE.exec(content)) !== null) {
     out.push(match[1]!);
+  }
+  return out;
+}
+
+/** Read `module` path from go.mod at project root, or null. */
+export function readGoModulePath(projectRoot: string): string | null {
+  const modPath = join(projectRoot, "go.mod");
+  try {
+    const content = readFileSync(modPath, "utf8");
+    const m = /^module\s+(\S+)/m.exec(content);
+    return m?.[1] ?? null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Extract Go import paths from single-line and parenthesized import blocks.
+ */
+export function extractGoImportSpecifiers(content: string): string[] {
+  const out: string[] = [];
+  const single =
+    /^\s*import\s+(?:[_.]\s+|[\w]+\s+)?"([^"]+)"/gm;
+  let match: RegExpExecArray | null;
+  while ((match = single.exec(content)) !== null) {
+    out.push(match[1]!);
+  }
+
+  const blockRe = /^\s*import\s*\(\s*([\s\S]*?)\s*\)/gm;
+  while ((match = blockRe.exec(content)) !== null) {
+    const body = match[1]!;
+    const lineRe = /^\s*(?:[_.]\s+|[\w]+\s+)?"([^"]+)"/gm;
+    let line: RegExpExecArray | null;
+    while ((line = lineRe.exec(body)) !== null) {
+      out.push(line[1]!);
+    }
+  }
+  return out;
+}
+
+function isGoStdlib(specifier: string): boolean {
+  const first = specifier.split("/")[0] ?? "";
+  return first.length > 0 && !first.includes(".");
+}
+
+/**
+ * Map a Go import path to a project-relative .go file (best-effort).
+ */
+export function resolveGoImportToPath(
+  specifier: string,
+  files: string[],
+  modulePath: string | null,
+): string | null {
+  if (!specifier || specifier === "C") return null;
+  if (isGoStdlib(specifier)) return null;
+  if (!modulePath) return null;
+  const prefix = modulePath.endsWith("/") ? modulePath : `${modulePath}/`;
+  if (!specifier.startsWith(prefix) && specifier !== modulePath) {
+    return null;
+  }
+  const rel =
+    specifier === modulePath ? "" : specifier.slice(prefix.length);
+  if (!rel) return null;
+
+  const fileSet = new Set(files);
+  const inPkg = files
+    .filter((f) => {
+      if (!GO_SOURCE_EXT.test(f) || f.endsWith("_test.go")) return false;
+      if (f === `${rel}.go`) return true;
+      if (!f.startsWith(`${rel}/`)) return false;
+      return !f.slice(rel.length + 1).includes("/");
+    })
+    .sort();
+  if (inPkg.length > 0) return inPkg[0]!;
+
+  // Directory package with nested files still matchable via globs
+  const anyUnder = files.find(
+    (f) => GO_SOURCE_EXT.test(f) && f.startsWith(`${rel}/`),
+  );
+  if (anyUnder) return anyUnder;
+
+  return `${rel}/pkg.go`;
+}
+
+function extractGoImportTargets(
+  content: string,
+  files: string[],
+  modulePath: string | null,
+): string[] {
+  const out: string[] = [];
+  for (const spec of extractGoImportSpecifiers(content)) {
+    const resolved = resolveGoImportToPath(spec, files, modulePath);
+    if (resolved) out.push(resolved);
   }
   return out;
 }

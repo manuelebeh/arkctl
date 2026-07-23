@@ -80,6 +80,31 @@ describe("detectStacks", () => {
     assert.ok(result.tags.includes("react-native"));
     assert.ok(result.tags.includes("mobile"));
   });
+
+  it("detects symfony from composer + bin/console", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ark-detect-"));
+    dirs.push(dir);
+    mkdirSync(join(dir, "bin"), { recursive: true });
+    writeFileSync(
+      join(dir, "composer.json"),
+      JSON.stringify({
+        require: { "symfony/framework-bundle": "^7.0" },
+      }),
+    );
+    writeFileSync(join(dir, "bin", "console"), "#!/usr/bin/env php\n");
+    const result = detectStacks(dir);
+    assert.ok(result.tags.includes("php"));
+    assert.ok(result.tags.includes("symfony"));
+    assert.ok(!result.tags.includes("laravel"));
+  });
+
+  it("detects go from go.mod", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ark-detect-"));
+    dirs.push(dir);
+    writeFileSync(join(dir, "go.mod"), "module example.com/app\n\ngo 1.22\n");
+    const result = detectStacks(dir);
+    assert.ok(result.tags.includes("go"));
+  });
 });
 
 describe("scoreArchitectures", () => {

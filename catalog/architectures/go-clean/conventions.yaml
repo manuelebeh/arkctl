@@ -1,0 +1,17 @@
+imports:
+  deny:
+    - from: internal/domain/**
+      to: internal/application/**
+    - from: internal/domain/**
+      to: internal/infrastructure/**
+    - from: internal/application/**
+      to: internal/infrastructure/**
+  allow:
+    - from: internal/application/**
+      to: internal/domain/**
+    - from: internal/infrastructure/**
+      to: internal/application/**
+    - from: internal/infrastructure/**
+      to: internal/domain/**
+    - from: cmd/**
+      to: "**"

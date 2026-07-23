@@ -1,0 +1,20 @@
+roots:
+  required:
+    - src/
+    - src/Controller/
+  optional:
+    - src/Entity/
+    - src/Repository/
+    - src/Service/
+    - config/
+    - public/
+    - bin/
+    - tests/
+
+forbid:
+  - app/Http/**
+  - Modules/**
+  - app-modules/**
+  - src/Domain/**
+
+allow_exceptions_file: architecture.exceptions.yaml

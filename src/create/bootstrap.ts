@@ -51,6 +51,20 @@ import {
   parseExpoBootstrap,
   type ExpoBootstrapMethod,
 } from "./expo-bootstrap.js";
+import {
+  bootstrapSymfony,
+  isSymfonyStack,
+  SYMFONY_BOOTSTRAP_OPTIONS,
+  parseSymfonyBootstrap,
+  type SymfonyBootstrapMethod,
+} from "./symfony-bootstrap.js";
+import {
+  bootstrapGo,
+  isGoStack,
+  GO_BOOTSTRAP_OPTIONS,
+  parseGoBootstrap,
+  type GoBootstrapMethod,
+} from "./go-bootstrap.js";
 
 export type ProjectDepth = "minimal" | "full";
 
@@ -62,7 +76,9 @@ export type FrameworkBootstrapMethod =
   | PlainPythonBootstrapMethod
   | NestBootstrapMethod
   | NuxtBootstrapMethod
-  | ExpoBootstrapMethod;
+  | ExpoBootstrapMethod
+  | SymfonyBootstrapMethod
+  | GoBootstrapMethod;
 
 export type BootstrapOption = {
   value: string;
@@ -80,6 +96,8 @@ export {
   isNestStack,
   isNuxtStack,
   isExpoStack,
+  isSymfonyStack,
+  isGoStack,
 };
 
 export function parseProjectDepth(value: unknown): ProjectDepth | undefined {
@@ -95,17 +113,21 @@ export function supportsDepthBootstrap(stacks: string[]): boolean {
     isPlainPythonStack(stacks) ||
     isNestStack(stacks) ||
     isNuxtStack(stacks) ||
-    isExpoStack(stacks)
+    isExpoStack(stacks) ||
+    isSymfonyStack(stacks) ||
+    isGoStack(stacks)
   );
 }
 
 export function frameworkLabel(stacks: string[]): string {
   if (isLaravelStack(stacks)) return "Laravel";
+  if (isSymfonyStack(stacks)) return "Symfony";
   if (isDjangoStack(stacks)) return "Django";
   if (isFastapiStack(stacks)) return "FastAPI";
   if (isNestStack(stacks)) return "NestJS";
   if (isNuxtStack(stacks)) return "Nuxt";
   if (isExpoStack(stacks)) return "Expo";
+  if (isGoStack(stacks)) return "Go";
   if (isPlainPhpStack(stacks)) return "PHP";
   if (isPlainPythonStack(stacks)) return "Python";
   return "framework";
@@ -113,11 +135,13 @@ export function frameworkLabel(stacks: string[]): string {
 
 export function bootstrapOptionsForStacks(stacks: string[]): BootstrapOption[] {
   if (isLaravelStack(stacks)) return LARAVEL_BOOTSTRAP_OPTIONS;
+  if (isSymfonyStack(stacks)) return SYMFONY_BOOTSTRAP_OPTIONS;
   if (isDjangoStack(stacks)) return DJANGO_BOOTSTRAP_OPTIONS;
   if (isFastapiStack(stacks)) return FASTAPI_BOOTSTRAP_OPTIONS;
   if (isNestStack(stacks)) return NEST_BOOTSTRAP_OPTIONS;
   if (isNuxtStack(stacks)) return NUXT_BOOTSTRAP_OPTIONS;
   if (isExpoStack(stacks)) return EXPO_BOOTSTRAP_OPTIONS;
+  if (isGoStack(stacks)) return GO_BOOTSTRAP_OPTIONS;
   if (isPlainPhpStack(stacks)) return PLAIN_PHP_BOOTSTRAP_OPTIONS;
   if (isPlainPythonStack(stacks)) return PLAIN_PYTHON_BOOTSTRAP_OPTIONS;
   return [];
@@ -128,11 +152,13 @@ export function parseBootstrapForStacks(
   value: unknown,
 ): FrameworkBootstrapMethod | undefined {
   if (isLaravelStack(stacks)) return parseLaravelBootstrap(value);
+  if (isSymfonyStack(stacks)) return parseSymfonyBootstrap(value);
   if (isDjangoStack(stacks)) return parseDjangoBootstrap(value);
   if (isFastapiStack(stacks)) return parseFastapiBootstrap(value);
   if (isNestStack(stacks)) return parseNestBootstrap(value);
   if (isNuxtStack(stacks)) return parseNuxtBootstrap(value);
   if (isExpoStack(stacks)) return parseExpoBootstrap(value);
+  if (isGoStack(stacks)) return parseGoBootstrap(value);
   if (isPlainPhpStack(stacks)) return parsePlainPhpBootstrap(value);
   if (isPlainPythonStack(stacks)) return parsePlainPythonBootstrap(value);
   return undefined;
@@ -153,6 +179,14 @@ export function bootstrapFramework(opts: {
   if (isLaravelStack(opts.stacks)) {
     bootstrapLaravel({
       method: opts.method as LaravelBootstrapMethod,
+      targetDir: opts.targetDir,
+      name: opts.name,
+    });
+    return;
+  }
+  if (isSymfonyStack(opts.stacks)) {
+    bootstrapSymfony({
+      method: opts.method as SymfonyBootstrapMethod,
       targetDir: opts.targetDir,
       name: opts.name,
     });
@@ -193,6 +227,14 @@ export function bootstrapFramework(opts: {
   if (isExpoStack(opts.stacks)) {
     bootstrapExpo({
       method: opts.method as ExpoBootstrapMethod,
+      targetDir: opts.targetDir,
+      name: opts.name,
+    });
+    return;
+  }
+  if (isGoStack(opts.stacks)) {
+    bootstrapGo({
+      method: opts.method as GoBootstrapMethod,
       targetDir: opts.targetDir,
       name: opts.name,
     });

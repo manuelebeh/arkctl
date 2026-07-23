@@ -18,6 +18,8 @@ const DOCTOR_TOOLS = [
   "ddev",
   "docker",
   "laravel",
+  "symfony",
+  "go",
   "cookiecutter",
   "django-admin",
   "python3",

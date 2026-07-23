@@ -1,0 +1,20 @@
+naming:
+  files:
+    controllers: "**/*Controller.php"
+    tests: "**/*Test.php"
+
+imports:
+  deny:
+    - from: src/Entity/**
+      to: src/Controller/**
+  allow:
+    - from: src/Controller/**
+      to: src/Service/**
+    - from: src/Controller/**
+      to: src/Entity/**
+    - from: src/Service/**
+      to: src/Entity/**
+    - from: src/Service/**
+      to: src/Repository/**
+    - from: src/Repository/**
+      to: src/Entity/**

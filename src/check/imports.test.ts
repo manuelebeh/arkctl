@@ -70,4 +70,92 @@ describe("checkImports", () => {
       `expected import issue, got ${JSON.stringify(issues)}`,
     );
   });
+
+  it("flags denied Go domain → infrastructure import", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ark-go-imports-"));
+    dirs.push(dir);
+    mkdirSync(join(dir, "internal", "domain"), { recursive: true });
+    mkdirSync(join(dir, "internal", "infrastructure"), { recursive: true });
+    writeFileSync(join(dir, "go.mod"), "module example.com/demo\n\ngo 1.22\n");
+    writeFileSync(
+      join(dir, "internal", "domain", "greet.go"),
+      `package domain
+
+import "example.com/demo/internal/infrastructure"
+
+func X() { _ = infrastructure.Y }
+`,
+    );
+    writeFileSync(
+      join(dir, "internal", "infrastructure", "db.go"),
+      `package infrastructure
+
+func Y() {}
+`,
+    );
+
+    const goConventions: Conventions = {
+      imports: {
+        deny: [
+          {
+            from: "internal/domain/**",
+            to: "internal/infrastructure/**",
+          },
+        ],
+      },
+    };
+
+    const issues = checkImports(
+      dir,
+      [
+        "internal/domain/greet.go",
+        "internal/infrastructure/db.go",
+      ],
+      goConventions,
+      { ...manifest, id: "go-clean" },
+    );
+
+    assert.ok(
+      issues.some((i) => i.code === "denied-import"),
+      `expected denied-import, got ${JSON.stringify(issues)}`,
+    );
+  });
+
+  it("ignores Go stdlib imports", () => {
+    const dir = mkdtempSync(join(tmpdir(), "ark-go-stdlib-"));
+    dirs.push(dir);
+    mkdirSync(join(dir, "internal", "domain"), { recursive: true });
+    writeFileSync(join(dir, "go.mod"), "module example.com/demo\n\ngo 1.22\n");
+    writeFileSync(
+      join(dir, "internal", "domain", "greet.go"),
+      `package domain
+
+import (
+  "fmt"
+  "strings"
+)
+
+func Hello() string { return strings.TrimSpace(fmt.Sprintf("hi")) }
+`,
+    );
+
+    const goConventions: Conventions = {
+      imports: {
+        deny: [
+          {
+            from: "internal/domain/**",
+            to: "internal/infrastructure/**",
+          },
+        ],
+      },
+    };
+
+    const issues = checkImports(
+      dir,
+      ["internal/domain/greet.go"],
+      goConventions,
+      { ...manifest, id: "go-clean" },
+    );
+    assert.equal(issues.length, 0);
+  });
 });

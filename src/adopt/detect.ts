@@ -70,8 +70,29 @@ export function detectStacks(projectRoot: string): StackDetection {
       deps.includes("laravel/framework")
     ) {
       tags.add("laravel");
-      signals.push(existsSync(join(projectRoot, "artisan")) ? "artisan" : "laravel/framework");
+      signals.push(
+        existsSync(join(projectRoot, "artisan"))
+          ? "artisan"
+          : "laravel/framework",
+      );
+    } else if (
+      existsSync(join(projectRoot, "bin", "console")) ||
+      deps.includes("symfony/framework-bundle") ||
+      deps.includes("symfony/runtime")
+    ) {
+      tags.add("symfony");
+      signals.push(
+        existsSync(join(projectRoot, "bin", "console"))
+          ? "bin/console"
+          : "symfony/framework-bundle",
+      );
     }
+  }
+
+  const goMod = join(projectRoot, "go.mod");
+  if (existsSync(goMod)) {
+    tags.add("go");
+    signals.push("go.mod");
   }
 
   const pyproject = join(projectRoot, "pyproject.toml");

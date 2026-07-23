@@ -1,0 +1,10 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Keeps cmd/ thin and code under internal/
+  - id: go-best-practices
+    reason: Modules, error wrapping, context, table-driven tests, gofmt
+
+brief: |
+  Follow the Go cmd + internal layout.
+  cmd/ is for thin main packages only; put implementation under internal/.
+  cmd may import internal/; internal/ must not import cmd/.

@@ -61,6 +61,8 @@ node dist/cli.js create py-app --language python --stack python --architecture p
 node dist/cli.js create api-nest --stack nest,typescript,api --architecture nest-modules --depth minimal
 node dist/cli.js create web-nuxt --stack vue,nuxt,web,typescript --architecture nuxt-feature --depth minimal
 node dist/cli.js create app-rn --stack react-native,expo,mobile,typescript --architecture expo-feature --depth minimal
+node dist/cli.js create sf --stack symfony,php --architecture symfony-clean --depth minimal
+node dist/cli.js create svc --stack go --architecture go-internal --depth minimal
 node dist/cli.js check ./demo
 node dist/cli.js check --json
 node dist/cli.js check --format sarif
@@ -68,14 +70,16 @@ node dist/cli.js check --format sarif
 
 `--project` alone skips language/framework/architecture prompts (architecture is derived). `--language` / `-l` picks the language bucket (e.g. `python`). `--stack` accepts a full tag set (`laravel,php`), a language (`python`), or a framework tag (`django`). `--architecture` / `--arch` then picks among templates for that family.
 
-On Laravel, Django, FastAPI, NestJS, Nuxt, Expo, plain PHP, and plain Python stacks, `--depth minimal|full` chooses an Ark skeleton or a real tool bootstrap. Full mode also needs `--bootstrap`:
+On Laravel, Symfony, Django, FastAPI, NestJS, Nuxt, Expo, Go, plain PHP, and plain Python stacks, `--depth minimal|full` chooses an Ark skeleton or a real tool bootstrap. Full mode also needs `--bootstrap`:
 
 - Laravel: `laravel-installer` | `composer` | `sail` | `ddev`
+- Symfony: `symfony-cli` | `composer` | `host`
 - Django: `uv` | `host` | `poetry` | `cookiecutter-django` | `django-admin`
 - FastAPI: `uv` | `host` | `poetry` | `cookiecutter`
 - NestJS: `nest-cli` | `host`
 - Nuxt: `nuxi` | `host`
 - Expo: `create-expo-app` | `host`
+- Go: `go-mod` | `host`
 - PHP (no framework): `composer` | `host`
 - Python (no framework): `uv` | `host` | `poetry`
 
@@ -194,6 +198,12 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `nest-hexagonal` | NestJS `src/{domain,application,adapters}/` |
 | `nuxt-feature` | Nuxt 4 `app/features/` + `shared/` |
 | `expo-feature` | Expo Router `src/app/` + `src/features/` + `src/shared/` |
+| `symfony-standard` | Symfony Flex `src/Controller/` |
+| `symfony-clean` | Symfony `src/{Domain,Application,Infrastructure}/` |
+| `symfony-hexagonal` | Symfony clean with HTTP under `Infrastructure/Http/` |
+| `go-internal` | Go `cmd/` + `internal/` |
+| `go-clean` | Go `internal/{domain,application,infrastructure}/` |
+| `go-hexagonal` | Go `internal/{domain,application,adapters}/` |
 
 ## Project types
 
@@ -228,6 +238,12 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `nest-hexagonal` | nest-hexagonal | `nest`, `typescript`, `api` | NestJS pack |
 | `nuxt-feature` | nuxt-feature | `vue`, `nuxt`, `web`, `typescript` | Nuxt pack |
 | `react-native-expo` | expo-feature | `react-native`, `expo`, `mobile`, `typescript` | Vercel React Native |
+| `symfony-standard` | symfony-standard | `symfony`, `php` | Symfony pack |
+| `symfony-clean` | symfony-clean | `symfony`, `php` | Symfony pack |
+| `symfony-hexagonal` | symfony-hexagonal | `symfony`, `php` | Symfony pack |
+| `go-internal` | go-internal | `go` | Go pack |
+| `go-clean` | go-clean | `go` | Go pack |
+| `go-hexagonal` | go-hexagonal | `go` | Go pack |
 
 TanStack: `tanstack-spa` (guidelines) and `tanstack-intent` (tool-skill, runs `npx @tanstack/intent install`).
 
@@ -239,6 +255,8 @@ TanStack: `tanstack-spa` (guidelines) and `tanstack-intent` (tool-skill, runs `n
 - FastAPI pack: `fastapi-best-practices` (stacks: `fastapi`, `python`)
 - Vanilla Python: `python-best-practices` (stacks: `python`)
 - Vanilla PHP: `php-best-practices` (stacks: `php`)
+- Symfony: `symfony-best-practices` (stacks: `symfony`, `php`)
+- Go: `go-best-practices` (stacks: `go`)
 - TanStack: `tanstack-spa` (stacks: `react`, `web`, `typescript`); `tanstack-intent` tool-skill (stacks: `react`, `next`, `web`, `typescript`)
 
 ## Built-in remote agents
@@ -314,4 +332,4 @@ npm test
 
 ## Status
 
-v0.5: Nest/Nuxt/Expo catalog packs + CLI bootstrap, Django + FastAPI packs, Python import checking, shared depth/bootstrap, `ark check --json` / `--format sarif`, GitHub Action, `adopt` / `update` / `remove agent` / `doctor`, `npm test`. v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add`, multi-architecture create (`feature-first`, `hexagonal`, `clean`, five Laravel approaches), optional `--run-postinstall`.
+v0.5: Symfony + Go catalog packs + Go import checking, Nest/Nuxt/Expo packs + CLI bootstrap, Django + FastAPI packs, Python import checking, shared depth/bootstrap, `ark check --json` / `--format sarif`, GitHub Action, `adopt` / `update` / `remove agent` / `doctor`, `npm test`. v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add`, multi-architecture create (`feature-first`, `hexagonal`, `clean`, five Laravel approaches), optional `--run-postinstall`.

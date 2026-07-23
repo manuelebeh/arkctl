@@ -1,0 +1,9 @@
+imports:
+  deny:
+    - from: internal/**
+      to: cmd/**
+  allow:
+    - from: cmd/**
+      to: internal/**
+    - from: cmd/**
+      to: pkg/**

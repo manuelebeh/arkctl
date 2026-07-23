@@ -1,0 +1,20 @@
+schema_version: 1
+id: symfony-hexagonal
+name: Symfony app (hexagonal)
+version: 0.1.0
+description: Minimal Symfony hexagonal scaffold
+
+implements:
+  architecture: symfony-hexagonal
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: php
+  runtime: php
+  tags: [symfony, php]
+  file_map:
+    index: Application/
+    test_suffix: Test.php
+
+source:
+  root: ./template

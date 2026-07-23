@@ -1,0 +1,11 @@
+roots:
+  required:
+    - cmd/
+    - internal/
+  optional:
+    - pkg/
+    - api/
+    - docs/
+    - tooling/
+
+allow_exceptions_file: architecture.exceptions.yaml

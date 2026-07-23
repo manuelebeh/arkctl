@@ -1,0 +1,9 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews Domain / Application / Infrastructure import rules
+  - id: symfony-best-practices
+    reason: Flex layout, DI, services.yaml, Doctrine placement
+
+brief: |
+  Follow Symfony clean architecture.
+  Domain must not import Application or Infrastructure.

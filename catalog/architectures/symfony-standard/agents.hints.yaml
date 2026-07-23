@@ -1,0 +1,11 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews Controller / Service / Entity boundaries
+  - id: symfony-best-practices
+    reason: Flex layout, DI, routing attributes, services.yaml
+  - id: php-best-practices
+    reason: PSR-12, Composer, strict types, security, PHPUnit
+
+brief: |
+  Follow Symfony Flex standard layout.
+  Controllers stay thin; services own business rules; entities stay free of HTTP.

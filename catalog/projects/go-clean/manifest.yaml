@@ -1,0 +1,20 @@
+schema_version: 1
+id: go-clean
+name: Go app (clean)
+version: 0.1.0
+description: Minimal Go clean-architecture scaffold
+
+implements:
+  architecture: go-clean
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: go
+  runtime: go
+  tags: [go]
+  file_map:
+    index: internal/application/
+    test_suffix: _test.go
+
+source:
+  root: ./template

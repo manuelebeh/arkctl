@@ -1,0 +1,20 @@
+schema_version: 1
+id: go-internal
+name: Go app (internal)
+version: 0.1.0
+description: Minimal Go cmd + internal scaffold
+
+implements:
+  architecture: go-internal
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: go
+  runtime: go
+  tags: [go]
+  file_map:
+    index: internal/
+    test_suffix: _test.go
+
+source:
+  root: ./template

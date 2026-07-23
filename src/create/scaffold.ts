@@ -23,6 +23,7 @@ import {
   isDjangoStack,
   isFastapiStack,
   isPlainPythonStack,
+  isSymfonyStack,
   type FrameworkBootstrapMethod,
   type ProjectDepth,
 } from "./bootstrap.js";
@@ -112,7 +113,11 @@ export async function createProject(options: CreateOptions): Promise<{
       skipExisting: true,
       templateRoot,
     });
-    if (isLaravelStack(stacks) || isPlainPhpStack(stacks)) {
+    if (
+      isLaravelStack(stacks) ||
+      isPlainPhpStack(stacks) ||
+      isSymfonyStack(stacks)
+    ) {
       mergeComposerJson(
         join(options.targetDir, "composer.json"),
         join(templateRoot, "composer.json"),

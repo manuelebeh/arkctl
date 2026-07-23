@@ -1,0 +1,9 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews Domain / Application / Infrastructure import rules
+  - id: symfony-best-practices
+    reason: Flex layout, DI, HTTP adapters, services.yaml
+
+brief: |
+  Follow Symfony hexagonal architecture.
+  Put HTTP controllers under Infrastructure/Http/, not src/Controller/.

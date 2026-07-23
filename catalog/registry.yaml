@@ -172,6 +172,42 @@ architectures:
     path: architectures/expo-feature
     source: local
 
+  - id: symfony-standard
+    name: Symfony standard (Flex)
+    version: 0.1.0
+    path: architectures/symfony-standard
+    source: local
+
+  - id: symfony-clean
+    name: Symfony clean architecture
+    version: 0.1.0
+    path: architectures/symfony-clean
+    source: local
+
+  - id: symfony-hexagonal
+    name: Symfony hexagonal
+    version: 0.1.0
+    path: architectures/symfony-hexagonal
+    source: local
+
+  - id: go-internal
+    name: Go internal layout
+    version: 0.1.0
+    path: architectures/go-internal
+    source: local
+
+  - id: go-clean
+    name: Go clean architecture
+    version: 0.1.0
+    path: architectures/go-clean
+    source: local
+
+  - id: go-hexagonal
+    name: Go hexagonal
+    version: 0.1.0
+    path: architectures/go-hexagonal
+    source: local
+
 projects:
   - id: ts-lib
     name: TypeScript library
@@ -405,6 +441,54 @@ projects:
     source: local
     stacks: [react-native, expo, mobile, typescript]
 
+  - id: symfony-standard
+    name: Symfony app (standard)
+    version: 0.1.0
+    implements: symfony-standard
+    path: projects/symfony-standard
+    source: local
+    stacks: [symfony, php]
+
+  - id: symfony-clean
+    name: Symfony app (clean)
+    version: 0.1.0
+    implements: symfony-clean
+    path: projects/symfony-clean
+    source: local
+    stacks: [symfony, php]
+
+  - id: symfony-hexagonal
+    name: Symfony app (hexagonal)
+    version: 0.1.0
+    implements: symfony-hexagonal
+    path: projects/symfony-hexagonal
+    source: local
+    stacks: [symfony, php]
+
+  - id: go-internal
+    name: Go app (internal)
+    version: 0.1.0
+    implements: go-internal
+    path: projects/go-internal
+    source: local
+    stacks: [go]
+
+  - id: go-clean
+    name: Go app (clean)
+    version: 0.1.0
+    implements: go-clean
+    path: projects/go-clean
+    source: local
+    stacks: [go]
+
+  - id: go-hexagonal
+    name: Go app (hexagonal)
+    version: 0.1.0
+    implements: go-hexagonal
+    path: projects/go-hexagonal
+    source: local
+    stacks: [go]
+
 agents:
   # --- Local personas ---
   - id: feature-owner
@@ -560,6 +644,28 @@ agents:
     source: local
     stacks: [php]
     description: PSR-12, Composer, strict types, security, PHPUnit
+    install:
+      merge_into: AGENTS.md
+
+  - id: symfony-best-practices
+    name: Symfony Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/symfony-best-practices
+    source: local
+    stacks: [symfony, php]
+    description: Flex layout, DI, attributes routing, Doctrine, Messenger
+    install:
+      merge_into: AGENTS.md
+
+  - id: go-best-practices
+    name: Go Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/go-best-practices
+    source: local
+    stacks: [go]
+    description: Modules, internal/cmd, errors, context, testing, gofmt
     install:
       merge_into: AGENTS.md
 

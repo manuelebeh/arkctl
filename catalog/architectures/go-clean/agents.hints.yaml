@@ -1,0 +1,9 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews domain / application / infrastructure import rules
+  - id: go-best-practices
+    reason: Modules, error wrapping, context, table-driven tests, gofmt
+
+brief: |
+  Follow Go clean architecture under internal/.
+  domain ← application ← infrastructure. Domain must not import outer layers.
