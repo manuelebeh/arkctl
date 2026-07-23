@@ -1,0 +1,13 @@
+{
+  "name": "{{project_name}}",
+  "type": "project",
+  "description": "Ark Laravel modular DDD scaffold",
+  "require": {
+    "php": "^8.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app/"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+naming:
+  modules:
+    pattern: "^[A-Z][A-Za-z0-9]*$"
+  files:
+    tests: "**/*Test.php"
+
+placement:
+  cross_module_imports: false
+  public_api: Modules/:name/routes/web.php
+
+imports:
+  deny: []
+  allow:
+    - from: Modules/*
+      to: Modules/*/routes/web.php
+    - from: Modules/*
+      to: Modules/*/routes/api.php
+    - from: Modules/*
+      to: shared/**
+    - from: Modules/*
+      to: app/**
+
+tests:
+  colocate: true

@@ -1,0 +1,20 @@
+schema_version: 1
+id: laravel-internachi
+name: Laravel app (internachi)
+version: 0.1.0
+description: Minimal Laravel InterNACHI modular packages scaffold
+
+implements:
+  architecture: laravel-internachi
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: php
+  runtime: php
+  tags: [laravel, php]
+  file_map:
+    index: routes/web.php
+    test_suffix: Test.php
+
+source:
+  root: ./template

@@ -1,8 +1,0 @@
-{
-  "name": "{{project_name}}",
-  "type": "project",
-  "description": "Ark feature-first Laravel scaffold",
-  "require": {
-    "php": "^8.2"
-  }
-}

@@ -1,0 +1,22 @@
+{
+  "name": "modules/accounts",
+  "description": "Accounts module",
+  "type": "library",
+  "version": "1.0",
+  "license": "proprietary",
+  "autoload": {
+    "psr-4": {
+      "Modules\\Accounts\\": "src/",
+      "Modules\\Accounts\\Tests\\": "tests/",
+      "Modules\\Accounts\\Database\\Factories\\": "database/factories/",
+      "Modules\\Accounts\\Database\\Seeders\\": "database/seeders/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modules\\Accounts\\Providers\\AccountsServiceProvider"
+      ]
+    }
+  }
+}

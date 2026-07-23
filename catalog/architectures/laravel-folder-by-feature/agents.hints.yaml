@@ -1,0 +1,14 @@
+recommended_agents:
+  - id: feature-owner
+    reason: Implements a feature within folder-by-feature boundaries
+  - id: architecture-guardian
+    reason: Reviews structure and imports against the architecture contract
+  - id: laravel-best-practices
+    reason: Laravel/PHP structure, validation, security
+  - id: laravel-database
+    reason: Eloquent, migrations, and query patterns
+
+brief: |
+  Follow Laravel folder-by-feature.
+  New domain behavior goes in app/{Feature}/, not a global Controllers dump.
+  Cross-feature access only via each feature's public routes entrypoint.

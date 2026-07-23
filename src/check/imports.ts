@@ -9,11 +9,15 @@ import type {
 import { matchImportGlob, matchSimpleGlob } from "./glob.js";
 import { resolveSeverity } from "./severity.js";
 
-const SOURCE_EXT = /\.(tsx?|jsx?|mts|cts)$/;
-const SKIP_DIR = /^(node_modules|dist|\.git)(\/|$)/;
+const JS_SOURCE_EXT = /\.(tsx?|jsx?|mts|cts)$/;
+const PHP_SOURCE_EXT = /\.php$/;
+const SKIP_DIR = /^(node_modules|dist|vendor|\.git)(\/|$)/;
 
 const IMPORT_RE =
   /(?:import\s+(?:type\s+)?(?:[^"'`]+?\s+from\s+)?|export\s+(?:type\s+)?(?:[^"'`]+?\s+from\s+)|(?:import|require)\s*\(\s*)['"]([^'"]+)['"]/g;
+
+const PHP_USE_RE =
+  /^use\s+(?!function\b|const\b)([A-Za-z_][A-Za-z0-9_\\]*)(?:\s+as\s+[A-Za-z_][A-Za-z0-9_]*)?\s*;/gm;
 
 export function parseModulesPath(pathPattern: string): {
   parentDir: string;
@@ -52,7 +56,8 @@ export function checkImports(
 
   const issues: CheckIssue[] = [];
   const sourceFiles = files.filter(
-    (f) => SOURCE_EXT.test(f) && !SKIP_DIR.test(f),
+    (f) =>
+      (JS_SOURCE_EXT.test(f) || PHP_SOURCE_EXT.test(f)) && !SKIP_DIR.test(f),
   );
 
   for (const file of sourceFiles) {
@@ -64,20 +69,18 @@ export function checkImports(
       continue;
     }
 
-    for (const specifier of extractImportSpecifiers(content)) {
-      const target = resolveRelativeImport(file, specifier, files);
-      if (!target) continue;
+    const isPhp = PHP_SOURCE_EXT.test(file);
+    const targets = isPhp
+      ? extractPhpImportTargets(content, files)
+      : extractJsImportTargets(file, content, files);
 
+    for (const target of targets) {
       const fromModule = modulesPath
         ? moduleName(file, modulesPath)
         : null;
       const toModule = modulesPath
         ? moduleName(target, modulesPath)
         : null;
-
-      if (fromModule && toModule && fromModule === toModule) {
-        continue;
-      }
 
       if (matchesAnyRule(file, target, allow)) {
         continue;
@@ -95,6 +98,10 @@ export function checkImports(
           message: `Import from "${file}" to "${target}" is denied (${denyRule.from} → ${denyRule.to})`,
           path: file,
         });
+        continue;
+      }
+
+      if (fromModule && toModule && fromModule === toModule) {
         continue;
       }
 
@@ -120,6 +127,28 @@ export function checkImports(
   return issues;
 }
 
+function extractJsImportTargets(
+  file: string,
+  content: string,
+  files: string[],
+): string[] {
+  const out: string[] = [];
+  for (const specifier of extractImportSpecifiers(content)) {
+    const target = resolveRelativeImport(file, specifier, files);
+    if (target) out.push(target);
+  }
+  return out;
+}
+
+function extractPhpImportTargets(content: string, files: string[]): string[] {
+  const out: string[] = [];
+  for (const fqcn of extractPhpUseNames(content)) {
+    const target = resolvePhpUseToPath(fqcn, files);
+    if (target) out.push(target);
+  }
+  return out;
+}
+
 function extractImportSpecifiers(content: string): string[] {
   const out: string[] = [];
   IMPORT_RE.lastIndex = 0;
@@ -128,6 +157,77 @@ function extractImportSpecifiers(content: string): string[] {
     out.push(match[1]!);
   }
   return out;
+}
+
+function extractPhpUseNames(content: string): string[] {
+  const out: string[] = [];
+  PHP_USE_RE.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = PHP_USE_RE.exec(content)) !== null) {
+    const name = match[1]!;
+    // Skip grouped use Foo\{Bar, Baz}
+    if (name.includes("{")) continue;
+    out.push(name);
+  }
+  return out;
+}
+
+/**
+ * Map a PHP FQCN to a project-relative path (best-effort PSR-4 heuristics).
+ */
+export function resolvePhpUseToPath(
+  fqcn: string,
+  files: string[],
+): string | null {
+  const parts = fqcn.split("\\").filter(Boolean);
+  if (parts.length < 2) return null;
+
+  const candidates: string[] = [];
+  const root = parts[0]!;
+
+  if (root === "App") {
+    candidates.push(joinPosix(["app", ...parts.slice(1)]) + ".php");
+  } else if (root === "Shared") {
+    candidates.push(joinPosix(["shared", ...parts.slice(1)]) + ".php");
+    candidates.push(joinPosix(["app", "Shared", ...parts.slice(1)]) + ".php");
+  } else if (root === "Modules") {
+    const moduleName = parts[1];
+    const rest = parts.slice(2);
+    if (moduleName) {
+      // nwidart: Modules\Accounts\* → Modules/Accounts/app/*
+      candidates.push(
+        joinPosix(["Modules", moduleName, "app", ...rest]) + ".php",
+      );
+      // InterNACHI: Modules\Accounts\* → app-modules/accounts/src/*
+      candidates.push(
+        joinPosix([
+          "app-modules",
+          pascalToKebab(moduleName),
+          "src",
+          ...rest,
+        ]) + ".php",
+      );
+    }
+  }
+
+  if (candidates.length === 0) return null;
+
+  const fileSet = new Set(files);
+  for (const c of candidates) {
+    if (fileSet.has(c)) return c;
+  }
+  return candidates[0] ?? null;
+}
+
+function joinPosix(parts: string[]): string {
+  return parts.filter(Boolean).join("/");
+}
+
+function pascalToKebab(name: string): string {
+  return name
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .toLowerCase();
 }
 
 /** Resolve relative imports only; returns project-relative path or null. */
@@ -156,10 +256,12 @@ function resolveRelativeImport(
     `${normalized}.jsx`,
     `${normalized}.mts`,
     `${normalized}.cts`,
+    `${normalized}.php`,
     `${normalized}/index.ts`,
     `${normalized}/index.tsx`,
     `${normalized}/index.js`,
     `${normalized}/index.jsx`,
+    `${normalized}/index.php`,
   ];
 
   const fileSet = new Set(files);

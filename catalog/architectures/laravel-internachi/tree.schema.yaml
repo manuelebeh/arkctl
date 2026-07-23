@@ -1,0 +1,38 @@
+roots:
+  required:
+    - app-modules/
+  optional:
+    - app/
+    - shared/
+    - docs/
+    - tooling/
+    - database/
+    - routes/
+    - resources/
+    - config/
+    - bootstrap/
+    - public/
+    - tests/
+
+modules:
+  path: app-modules/:name
+  required_children:
+    - composer.json
+    - src/Providers/
+    - routes/
+  optional_children:
+    - src/Models/
+    - src/Http/
+    - src/Console/
+    - database/
+    - resources/
+    - tests/
+  forbid:
+    - app-modules/:name/app-modules/
+
+forbid:
+  - app/Features/**
+  - Modules/**
+  - app/Domains/**
+
+allow_exceptions_file: architecture.exceptions.yaml

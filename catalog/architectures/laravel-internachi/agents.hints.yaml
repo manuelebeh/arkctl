@@ -1,0 +1,12 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews package module boundaries against the architecture contract
+  - id: laravel-best-practices
+    reason: Laravel/PHP structure, validation, security
+  - id: laravel-database
+    reason: Eloquent, migrations, and query patterns
+
+brief: |
+  Follow InterNACHI modular packages.
+  New capability goes in app-modules/{kebab-name}/ as a Composer path package.
+  Prefer Laravel package conventions; keep modules extractable.

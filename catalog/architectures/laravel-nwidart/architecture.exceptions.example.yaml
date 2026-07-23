@@ -1,0 +1,9 @@
+# Copy to the project root as architecture.exceptions.yaml
+
+exceptions:
+  - code: cross-module-import
+    path: Modules/Accounts/app/Http/Controllers/LegacyController.php
+    reason: "migration in progress"
+  - code: forbidden-path
+    path: app/Features/**
+    severity: warn

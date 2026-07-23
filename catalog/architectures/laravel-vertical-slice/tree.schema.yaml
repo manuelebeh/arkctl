@@ -1,0 +1,38 @@
+roots:
+  required:
+    - app/
+    - app/Features/
+  optional:
+    - app/Models/
+    - shared/
+    - docs/
+    - tooling/
+    - database/
+    - routes/
+    - resources/
+    - config/
+    - bootstrap/
+    - public/
+    - tests/
+
+modules:
+  path: app/Features/:name
+  required_children:
+    - Action.php
+  optional_children:
+    - Controller.php
+    - Request.php
+    - Resource.php
+    - Mail.php
+    - Job.php
+    - Listener.php
+    - Tests/
+  forbid:
+    - app/Features/:name/Features/
+
+forbid:
+  - Modules/**
+  - app-modules/**
+  - app/Domains/**
+
+allow_exceptions_file: architecture.exceptions.yaml

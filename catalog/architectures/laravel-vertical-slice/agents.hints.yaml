@@ -1,0 +1,14 @@
+recommended_agents:
+  - id: feature-owner
+    reason: Implements a use-case slice within vertical-slice boundaries
+  - id: architecture-guardian
+    reason: Reviews structure and imports against the architecture contract
+  - id: laravel-best-practices
+    reason: Laravel/PHP structure, validation, security
+  - id: laravel-database
+    reason: Eloquent, migrations, and query patterns
+
+brief: |
+  Follow Laravel vertical slice.
+  New use cases go in app/Features/{Slice}/ with Action.php as the entrypoint.
+  Cross-slice access only via another slice's Action.php.

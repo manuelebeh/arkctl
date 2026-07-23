@@ -1,0 +1,9 @@
+# Copy to the project root as architecture.exceptions.yaml
+
+exceptions:
+  - code: cross-module-import
+    path: app-modules/accounts/src/Http/Controllers/LegacyController.php
+    reason: "migration in progress"
+  - code: module-naming
+    path: app-modules/Accounts
+    reason: "legacy PascalCase module being renamed"

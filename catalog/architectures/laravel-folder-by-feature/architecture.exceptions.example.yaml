@@ -1,0 +1,13 @@
+# Copy to the project root as architecture.exceptions.yaml
+# (filename comes from tree.schema.yaml → allow_exceptions_file).
+
+exceptions:
+  - code: module-naming
+    path: app/Support
+    reason: "shared technical helpers under app/Support"
+  - code: missing-module-file
+    path: app/Support/**
+    reason: "Support is not a business feature module"
+  - code: cross-module-import
+    path: app/Accounts/Controllers/LegacyController.php
+    reason: "migration in progress"

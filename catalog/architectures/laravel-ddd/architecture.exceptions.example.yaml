@@ -1,0 +1,9 @@
+# Copy to the project root as architecture.exceptions.yaml
+
+exceptions:
+  - code: denied-import
+    path: app/Domains/Accounts/Domain/LegacyBridge.php
+    reason: "temporary bridge during migration"
+  - code: cross-module-import
+    path: app/Domains/Accounts/Application/SyncOrders.php
+    reason: "explicit anti-corruption layer"

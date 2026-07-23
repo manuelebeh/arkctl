@@ -1,0 +1,22 @@
+naming:
+  modules:
+    pattern: "^[A-Z][A-Za-z0-9]*$"
+  files:
+    tests: "**/*Test.php"
+
+placement:
+  cross_module_imports: false
+  public_api: app/Features/:name/Action.php
+
+imports:
+  deny: []
+  allow:
+    - from: app/Features/*
+      to: app/Features/*/Action.php
+    - from: app/Features/*
+      to: app/Models/**
+    - from: app/Features/*
+      to: shared/**
+
+tests:
+  colocate: true

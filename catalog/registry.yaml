@@ -22,6 +22,36 @@ architectures:
     path: architectures/clean
     source: local
 
+  - id: laravel-folder-by-feature
+    name: Laravel folder-by-feature
+    version: 0.1.0
+    path: architectures/laravel-folder-by-feature
+    source: local
+
+  - id: laravel-vertical-slice
+    name: Laravel vertical slice
+    version: 0.1.0
+    path: architectures/laravel-vertical-slice
+    source: local
+
+  - id: laravel-nwidart
+    name: Laravel modules (nwidart)
+    version: 0.1.0
+    path: architectures/laravel-nwidart
+    source: local
+
+  - id: laravel-internachi
+    name: Laravel packages (InterNACHI)
+    version: 0.1.0
+    path: architectures/laravel-internachi
+    source: local
+
+  - id: laravel-ddd
+    name: Laravel modular DDD
+    version: 0.1.0
+    path: architectures/laravel-ddd
+    source: local
+
 projects:
   - id: ts-lib
     name: TypeScript library
@@ -55,11 +85,43 @@ projects:
     source: local
     stacks: [react, next, web, ui, typescript]
 
-  - id: laravel-app
-    name: Laravel app
+  - id: laravel-folder-by-feature
+    name: Laravel app (folder-by-feature)
     version: 0.1.0
-    implements: feature-first
-    path: projects/laravel-app
+    implements: laravel-folder-by-feature
+    path: projects/laravel-folder-by-feature
+    source: local
+    stacks: [laravel, php]
+
+  - id: laravel-vertical-slice
+    name: Laravel app (vertical-slice)
+    version: 0.1.0
+    implements: laravel-vertical-slice
+    path: projects/laravel-vertical-slice
+    source: local
+    stacks: [laravel, php]
+
+  - id: laravel-nwidart
+    name: Laravel app (nwidart)
+    version: 0.1.0
+    implements: laravel-nwidart
+    path: projects/laravel-nwidart
+    source: local
+    stacks: [laravel, php]
+
+  - id: laravel-internachi
+    name: Laravel app (internachi)
+    version: 0.1.0
+    implements: laravel-internachi
+    path: projects/laravel-internachi
+    source: local
+    stacks: [laravel, php]
+
+  - id: laravel-ddd
+    name: Laravel app (ddd)
+    version: 0.1.0
+    implements: laravel-ddd
+    path: projects/laravel-ddd
     source: local
     stacks: [laravel, php]
 

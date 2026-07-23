@@ -16,7 +16,7 @@ ark add agent --agents karpathy
 
 | Concept | Role |
 |---|---|
-| Architecture | Contract (`feature-first`, `hexagonal`, `clean`, …): layout, naming, forbidden paths, import rules |
+| Architecture | Contract (`feature-first`, `hexagonal`, `clean`, Laravel variants, …): layout, naming, forbidden paths, import rules |
 | Project type | Template that implements an architecture (+ stack tags) |
 | Agent | Portable pack: local manifest, remote guidelines, Agent Skills, or tool-skills |
 
@@ -45,7 +45,8 @@ node dist/cli.js create demo --stack lib,typescript --architecture feature-first
 node dist/cli.js create hex --stack lib,typescript --architecture hexagonal
 node dist/cli.js create clean-demo --stack lib,typescript --architecture clean
 node dist/cli.js create web --project react-next
-node dist/cli.js create api --project laravel-app
+node dist/cli.js create api --stack laravel,php --architecture laravel-ddd
+node dist/cli.js create api-vsa --stack laravel,php --architecture laravel-vertical-slice
 node dist/cli.js check ./demo
 ```
 
@@ -139,6 +140,11 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `feature-first` | Domain in `features/<name>/`, public API + `shared/` |
 | `hexagonal` | `domain/`, `application/` (ports), `adapters/inbound|outbound/` |
 | `clean` | `domain/`, `application/`, `infrastructure/` |
+| `laravel-folder-by-feature` | `app/{Feature}/` with Controllers, Models, Routes |
+| `laravel-vertical-slice` | `app/Features/{Slice}/` with `Action.php` entrypoint |
+| `laravel-nwidart` | `Modules/{Module}/` via nwidart/laravel-modules |
+| `laravel-internachi` | `app-modules/{module}/` Composer path packages |
+| `laravel-ddd` | `app/Domains/{Domain}/{Domain,Application,Infrastructure}/` |
 
 ## Project types
 
@@ -148,7 +154,11 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `ts-lib-hexagonal` | hexagonal | `lib`, `typescript` | general agents only |
 | `ts-lib-clean` | clean | `lib`, `typescript` | general agents only |
 | `react-next` | feature-first | `react`, `next`, `web`, `ui`, `typescript` | Hallmark, Vercel React/Next skills, React Doctor |
-| `laravel-app` | feature-first | `laravel`, `php` | Laravel pack |
+| `laravel-folder-by-feature` | laravel-folder-by-feature | `laravel`, `php` | Laravel pack |
+| `laravel-vertical-slice` | laravel-vertical-slice | `laravel`, `php` | Laravel pack |
+| `laravel-nwidart` | laravel-nwidart | `laravel`, `php` | Laravel pack |
+| `laravel-internachi` | laravel-internachi | `laravel`, `php` | Laravel pack |
+| `laravel-ddd` | laravel-ddd | `laravel`, `php` | Laravel pack |
 
 TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet.
 
@@ -169,4 +179,4 @@ TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet
 
 ## Status
 
-v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add` (architecture / project / agent), multi-architecture create (`feature-first`, `hexagonal`, `clean`), optional `--run-postinstall`.
+v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add` (architecture / project / agent), multi-architecture create (`feature-first`, `hexagonal`, `clean`, five Laravel approaches), optional `--run-postinstall`.

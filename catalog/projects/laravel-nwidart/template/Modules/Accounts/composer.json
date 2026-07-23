@@ -1,0 +1,17 @@
+{
+  "name": "modules/accounts",
+  "description": "Accounts module",
+  "type": "library",
+  "autoload": {
+    "psr-4": {
+      "Modules\\Accounts\\": "app/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Modules\\Accounts\\Providers\\AccountsServiceProvider"
+      ]
+    }
+  }
+}

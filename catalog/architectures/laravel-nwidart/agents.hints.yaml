@@ -1,0 +1,12 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews module boundaries against the architecture contract
+  - id: laravel-best-practices
+    reason: Laravel/PHP structure, validation, security
+  - id: laravel-database
+    reason: Eloquent, migrations, and query patterns
+
+brief: |
+  Follow nwidart Laravel modules.
+  New capability goes in Modules/{Module}/ with module.json and providers.
+  Prefer events or contracts between modules; avoid deep cross-module imports.

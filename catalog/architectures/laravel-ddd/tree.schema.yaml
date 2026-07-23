@@ -1,0 +1,45 @@
+roots:
+  required:
+    - app/Domains/
+    - app/Shared/
+  optional:
+    - app/
+    - shared/
+    - docs/
+    - tooling/
+    - database/
+    - routes/
+    - resources/
+    - config/
+    - bootstrap/
+    - public/
+    - tests/
+
+modules:
+  path: app/Domains/:name
+  required_children:
+    - Domain/
+    - Application/
+    - Infrastructure/
+  optional_children:
+    - Tests/
+  forbid:
+    - app/Domains/:name/Domains/
+
+shared:
+  path: app/Shared/
+  allow:
+    - lib/**
+    - config/**
+    - Contracts/**
+    - Support/**
+  forbid_globs:
+    - app/Shared/**/Domain/**
+    - app/Shared/**/Infrastructure/**
+
+forbid:
+  - Modules/**
+  - app-modules/**
+  - app/Features/**
+
+allow_exceptions_file: architecture.exceptions.yaml

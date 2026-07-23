@@ -1,0 +1,20 @@
+schema_version: 1
+id: laravel-folder-by-feature
+name: Laravel app (folder-by-feature)
+version: 0.1.0
+description: Minimal Laravel folder-by-feature scaffold
+
+implements:
+  architecture: laravel-folder-by-feature
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: php
+  runtime: php
+  tags: [laravel, php]
+  file_map:
+    index: Routes/routes.php
+    test_suffix: Test.php
+
+source:
+  root: ./template

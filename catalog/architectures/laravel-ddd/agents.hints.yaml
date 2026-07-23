@@ -1,0 +1,12 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews DDD layer boundaries against the architecture contract
+  - id: laravel-best-practices
+    reason: Laravel/PHP structure, validation, security
+  - id: laravel-database
+    reason: Persistence belongs in Infrastructure (Eloquent, migrations)
+
+brief: |
+  Follow Laravel modular DDD.
+  New bounded contexts go in app/Domains/{Domain}/ with Domain, Application, Infrastructure.
+  Domain must not import Infrastructure. Cross-domain access via Application or Shared contracts.
