@@ -1,0 +1,7 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews layered api → services → repositories boundaries
+
+brief: |
+  Follow FastAPI layered layout.
+  api → services → repositories → models. Schemas are I/O only.

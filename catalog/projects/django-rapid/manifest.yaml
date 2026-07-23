@@ -1,0 +1,20 @@
+schema_version: 1
+id: django-rapid
+name: Django app (rapid)
+version: 0.1.0
+description: Minimal Django RAPID layered scaffold
+
+implements:
+  architecture: django-rapid
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: python
+  runtime: python
+  tags: [django, python]
+  file_map:
+    index: actions/
+    test_suffix: test_.py
+
+source:
+  root: ./template

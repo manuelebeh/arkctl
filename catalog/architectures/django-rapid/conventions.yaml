@@ -1,0 +1,25 @@
+imports:
+  deny:
+    - from: data/**
+      to: interfaces/**
+    - from: data/**
+      to: actions/**
+    - from: data/**
+      to: readers/**
+    - from: readers/**
+      to: interfaces/**
+    - from: actions/**
+      to: interfaces/**
+  allow:
+    - from: interfaces/**
+      to: actions/**
+    - from: interfaces/**
+      to: readers/**
+    - from: actions/**
+      to: data/**
+    - from: readers/**
+      to: data/**
+    - from: actions/**
+      to: readers/**
+    - from: "**"
+      to: shared/**

@@ -1,0 +1,19 @@
+imports:
+  deny:
+    - from: app/core/**
+      to: app/api/**
+    - from: app/models.py
+      to: app/api/**
+  allow:
+    - from: app/api/**
+      to: app/crud.py
+    - from: app/api/**
+      to: app/models.py
+    - from: app/api/**
+      to: app/core/**
+    - from: app/crud.py
+      to: app/models.py
+    - from: app/crud.py
+      to: app/core/**
+    - from: "**"
+      to: app/core/**

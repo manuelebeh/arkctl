@@ -1,0 +1,19 @@
+roots:
+  required:
+    - app/
+    - app/api/
+    - app/core/
+  optional:
+    - shared/
+    - docs/
+    - tooling/
+    - tests/
+    - alembic/
+
+forbid:
+  - src/**
+  - contexts/**
+  - presentation/**
+  - repositories/**
+
+allow_exceptions_file: architecture.exceptions.yaml

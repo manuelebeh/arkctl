@@ -16,7 +16,7 @@ ark add agent --agents karpathy
 
 | Concept | Role |
 |---|---|
-| Architecture | Contract (`feature-first`, `hexagonal`, `clean`, Laravel variants, …): layout, naming, forbidden paths, import rules |
+| Architecture | Contract (`feature-first`, `hexagonal`, `clean`, Laravel / Django / FastAPI variants, …): layout, naming, forbidden paths, import rules |
 | Project type | Template that implements an architecture (+ stack tags) |
 | Agent | Portable pack: local manifest, remote guidelines, Agent Skills, or tool-skills |
 
@@ -48,12 +48,20 @@ node dist/cli.js create web --project react-next
 node dist/cli.js create api --stack laravel,php --architecture laravel-ddd --depth minimal
 node dist/cli.js create api-full --stack laravel,php --architecture laravel-ddd --depth full --bootstrap ddev
 node dist/cli.js create api-vsa --stack laravel,php --architecture laravel-vertical-slice --depth minimal
+node dist/cli.js create dj --stack django,python --architecture django-services --depth minimal
+node dist/cli.js create dj-full --stack django,python --architecture django-ddd --depth full --bootstrap uv
+node dist/cli.js create fa --stack fastapi,python --architecture fastapi-modules --depth minimal
+node dist/cli.js create fa-full --stack fastapi,python --architecture fastapi-clean --depth full --bootstrap uv
 node dist/cli.js check ./demo
 ```
 
 `--project` alone skips stack/architecture prompts (architecture is derived). `--stack` selects the project family; `--architecture` / `--arch` then picks among templates for that family. Both together resolve the project type.
 
-On Laravel stacks, `--depth minimal|full` chooses an Ark skeleton or a real Laravel bootstrap. Full mode also needs `--bootstrap laravel-installer|composer|sail|ddev`.
+On Laravel, Django, and FastAPI stacks, `--depth minimal|full` chooses an Ark skeleton or a real framework bootstrap. Full mode also needs `--bootstrap`:
+
+- Laravel: `laravel-installer` | `composer` | `sail` | `ddev`
+- Django: `uv` | `host` | `poetry` | `cookiecutter-django` | `django-admin`
+- FastAPI: `uv` | `host` | `poetry` | `cookiecutter`
 
 In non-interactive shells (no TTY), pass required flags (`name`, `--project`, or `--stack` + `--architecture`, etc.). Agent prompts are skipped (no agents) unless you pass `--agents` / `--preset`. Cancelled prompts exit with code `1`.
 
@@ -148,6 +156,14 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `laravel-nwidart` | `Modules/{Module}/` via nwidart/laravel-modules |
 | `laravel-internachi` | `app-modules/{module}/` Composer path packages |
 | `laravel-ddd` | `app/Domains/{Domain}/{Domain,Application,Infrastructure}/` |
+| `django-apps` | `apps/{app}/` with `models.py` + `apps.py` |
+| `django-services` | `apps/{app}/` with `services.py` + `selectors.py` |
+| `django-rapid` | RAPID: `data/`, `interfaces/`, `readers/`, `actions/` |
+| `django-ddd` | `domains/{domain}/{domain,application,infrastructure}/` |
+| `fastapi-tiangolo` | `app/api/`, `app/crud.py`, `app/models.py`, `app/core/` |
+| `fastapi-layered` | `api/`, `services/`, `repositories/`, `models/`, `schemas/` |
+| `fastapi-modules` | `src/{feature}/` with `router.py` + `service.py` |
+| `fastapi-clean` | `domain/`, `application/`, `infrastructure/`, `presentation/` |
 
 ## Project types
 
@@ -162,6 +178,14 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `laravel-nwidart` | laravel-nwidart | `laravel`, `php` | Laravel pack |
 | `laravel-internachi` | laravel-internachi | `laravel`, `php` | Laravel pack |
 | `laravel-ddd` | laravel-ddd | `laravel`, `php` | Laravel pack |
+| `django-apps` | django-apps | `django`, `python` | Django pack |
+| `django-services` | django-services | `django`, `python` | Django pack |
+| `django-rapid` | django-rapid | `django`, `python` | Django pack |
+| `django-ddd` | django-ddd | `django`, `python` | Django pack |
+| `fastapi-tiangolo` | fastapi-tiangolo | `fastapi`, `python` | FastAPI pack |
+| `fastapi-layered` | fastapi-layered | `fastapi`, `python` | FastAPI pack |
+| `fastapi-modules` | fastapi-modules | `fastapi`, `python` | FastAPI pack |
+| `fastapi-clean` | fastapi-clean | `fastapi`, `python` | FastAPI pack |
 
 TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet.
 
@@ -182,4 +206,4 @@ TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet
 
 ## Status
 
-v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add` (architecture / project / agent), multi-architecture create (`feature-first`, `hexagonal`, `clean`, five Laravel approaches), optional `--run-postinstall`.
+v0.5: Django + FastAPI catalog packs (eight architectures), Python import checking, shared depth/bootstrap (`uv` / `host` / `poetry` / cookiecutter / `django-admin`). v0.4: GitHub download + cache, stack-filtered agent selection, remote skill/guidelines install, user catalog + `ark add`, multi-architecture create (`feature-first`, `hexagonal`, `clean`, five Laravel approaches), optional `--run-postinstall`.

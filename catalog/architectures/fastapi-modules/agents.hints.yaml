@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews feature-module boundaries under src/
+
+brief: |
+  Follow FastAPI feature modules.
+  New features go in src/{feature}/ with router.py and service.py.
+  Prefer importing another feature via its service.py.

@@ -1,0 +1,20 @@
+schema_version: 1
+id: fastapi-modules
+name: FastAPI app (modules)
+version: 0.1.0
+description: Minimal FastAPI feature-modules scaffold (src/{feature})
+
+implements:
+  architecture: fastapi-modules
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: python
+  runtime: python
+  tags: [fastapi, python]
+  file_map:
+    index: router.py
+    test_suffix: test_.py
+
+source:
+  root: ./template

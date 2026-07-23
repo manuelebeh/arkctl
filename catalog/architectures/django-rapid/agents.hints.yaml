@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews RAPID layer boundaries (data / interfaces / readers / actions)
+
+brief: |
+  Follow Django RAPID.
+  Put models in data/, HTTP in interfaces/, reads in readers/, writes in actions/.
+  Do not recreate vertical project apps under apps/.

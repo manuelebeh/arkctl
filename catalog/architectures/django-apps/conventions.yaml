@@ -1,0 +1,22 @@
+naming:
+  modules:
+    pattern: "^[a-z][a-z0-9_]*$"
+  files:
+    tests: "**/test_*.py"
+
+placement:
+  cross_module_imports: false
+  public_api: apps/:name/**
+
+imports:
+  deny: []
+  allow:
+    - from: apps/*
+      to: apps/*
+    - from: apps/*
+      to: shared/**
+    - from: "**"
+      to: shared/**
+
+tests:
+  colocate: true

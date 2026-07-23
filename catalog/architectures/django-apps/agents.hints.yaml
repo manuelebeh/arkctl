@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews app boundaries against the architecture contract
+
+brief: |
+  Follow Django domain apps.
+  New business areas go in apps/{app}/ with models.py and apps.py.
+  Shared helpers live in shared/. Cross-app access should stay intentional.

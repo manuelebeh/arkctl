@@ -1,0 +1,39 @@
+imports:
+  deny:
+    - from: models/**
+      to: api/**
+    - from: models/**
+      to: services/**
+    - from: models/**
+      to: schemas/**
+    - from: repositories/**
+      to: api/**
+    - from: repositories/**
+      to: services/**
+    - from: services/**
+      to: api/**
+    - from: schemas/**
+      to: api/**
+    - from: schemas/**
+      to: services/**
+    - from: schemas/**
+      to: repositories/**
+    - from: schemas/**
+      to: models/**
+  allow:
+    - from: api/**
+      to: services/**
+    - from: api/**
+      to: schemas/**
+    - from: services/**
+      to: repositories/**
+    - from: services/**
+      to: models/**
+    - from: services/**
+      to: schemas/**
+    - from: repositories/**
+      to: models/**
+    - from: "**"
+      to: core/**
+    - from: "**"
+      to: shared/**

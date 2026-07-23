@@ -11,14 +11,18 @@ import {
   copyTemplateDir,
   copyTemplateDirMerge,
   mergeComposerJson,
+  mergePyprojectToml,
   writeFolderByFeatureExceptions,
 } from "../fs/files.js";
 import type { ArchitectureManifest, ProjectManifest } from "../types.js";
 import {
-  bootstrapLaravel,
-  type LaravelBootstrapMethod,
-  type LaravelDepth,
-} from "./laravel-bootstrap.js";
+  bootstrapFramework,
+  frameworkLabel,
+  isLaravelStack,
+  type FrameworkBootstrapMethod,
+  type ProjectDepth,
+} from "./bootstrap.js";
+import { resolveProjectStacks } from "../agents/filter.js";
 
 export type CreateOptions = {
   name: string;
@@ -33,10 +37,10 @@ export type CreateOptions = {
   runPostInstall?: boolean;
   /** Extra human notes appended to .agents/POSTINSTALL.md */
   postInstallNotes?: string[];
-  /** Laravel stack only: minimal skeleton vs full app bootstrap. */
-  depth?: LaravelDepth;
+  /** Laravel / Django / FastAPI: minimal skeleton vs full app bootstrap. */
+  depth?: ProjectDepth;
   /** Required when depth is full. */
-  bootstrap?: LaravelBootstrapMethod;
+  bootstrap?: FrameworkBootstrapMethod;
   /** Optional progress hooks for the CLI spinner. */
   onProgress?: (message: string) => void;
 };
@@ -78,16 +82,22 @@ export async function createProject(options: CreateOptions): Promise<{
     project_name: options.name,
   };
 
+  const stacks = resolveProjectStacks({
+    registryStacks: projectEntry.stacks,
+    manifestTags: projectManifest.stack.tags,
+  });
+  const label = frameworkLabel(stacks);
   const depth = options.depth ?? "minimal";
 
   if (depth === "full") {
     if (!options.bootstrap) {
-      throw new Error("Full Laravel depth requires a bootstrap method");
+      throw new Error(`Full ${label} depth requires a bootstrap method`);
     }
     options.onProgress?.(
-      `Bootstrapping Laravel (${options.bootstrap})…`,
+      `Bootstrapping ${label} (${options.bootstrap})…`,
     );
-    bootstrapLaravel({
+    bootstrapFramework({
+      stacks,
       method: options.bootstrap,
       targetDir: options.targetDir,
       name: options.name,
@@ -98,12 +108,19 @@ export async function createProject(options: CreateOptions): Promise<{
       skipExisting: true,
       templateRoot,
     });
-    mergeComposerJson(
-      join(options.targetDir, "composer.json"),
-      join(templateRoot, "composer.json"),
-    );
-    if (archId === "laravel-folder-by-feature") {
-      writeFolderByFeatureExceptions(options.targetDir);
+    if (isLaravelStack(stacks)) {
+      mergeComposerJson(
+        join(options.targetDir, "composer.json"),
+        join(templateRoot, "composer.json"),
+      );
+      if (archId === "laravel-folder-by-feature") {
+        writeFolderByFeatureExceptions(options.targetDir);
+      }
+    } else {
+      mergePyprojectToml(
+        join(options.targetDir, "pyproject.toml"),
+        join(templateRoot, "pyproject.toml"),
+      );
     }
   } else {
     mkdirSync(options.targetDir, { recursive: true });

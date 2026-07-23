@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews clean architecture import rules
+
+brief: |
+  Follow FastAPI clean architecture.
+  domain ← application ← presentation/infrastructure.
+  Domain must not import outer layers.

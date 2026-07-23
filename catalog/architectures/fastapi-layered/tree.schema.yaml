@@ -1,0 +1,28 @@
+roots:
+  required:
+    - api/
+    - services/
+    - repositories/
+    - models/
+    - schemas/
+  optional:
+    - core/
+    - shared/
+    - docs/
+    - tooling/
+    - tests/
+
+shared:
+  path: shared/
+  allow:
+    - lib/**
+    - config/**
+    - types/**
+
+forbid:
+  - app/modules/**
+  - src/**
+  - contexts/**
+  - presentation/**
+
+allow_exceptions_file: architecture.exceptions.yaml

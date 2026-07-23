@@ -1,0 +1,25 @@
+imports:
+  deny:
+    - from: domain/**
+      to: application/**
+    - from: domain/**
+      to: infrastructure/**
+    - from: domain/**
+      to: presentation/**
+    - from: application/**
+      to: infrastructure/**
+    - from: application/**
+      to: presentation/**
+  allow:
+    - from: presentation/**
+      to: application/**
+    - from: presentation/**
+      to: domain/**
+    - from: infrastructure/**
+      to: application/**
+    - from: infrastructure/**
+      to: domain/**
+    - from: application/**
+      to: domain/**
+    - from: "**"
+      to: shared/**

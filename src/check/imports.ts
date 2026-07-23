@@ -11,13 +11,19 @@ import { resolveSeverity } from "./severity.js";
 
 const JS_SOURCE_EXT = /\.(tsx?|jsx?|mts|cts)$/;
 const PHP_SOURCE_EXT = /\.php$/;
-const SKIP_DIR = /^(node_modules|dist|vendor|\.git)(\/|$)/;
+const PY_SOURCE_EXT = /\.py$/;
+const SKIP_DIR =
+  /^(node_modules|dist|vendor|\.git|\.venv|venv|__pycache__|\.pytest_cache|\.mypy_cache|\.ruff_cache|\.tox)(\/|$)/;
 
 const IMPORT_RE =
   /(?:import\s+(?:type\s+)?(?:[^"'`]+?\s+from\s+)?|export\s+(?:type\s+)?(?:[^"'`]+?\s+from\s+)|(?:import|require)\s*\(\s*)['"]([^'"]+)['"]/g;
 
 const PHP_USE_RE =
   /^use\s+(?!function\b|const\b)([A-Za-z_][A-Za-z0-9_\\]*)(?:\s+as\s+[A-Za-z_][A-Za-z0-9_]*)?\s*;/gm;
+
+const PY_FROM_RE =
+  /^\s*from\s+(\.+[\w.]*|[\w.]+)\s+import\s+/gm;
+const PY_IMPORT_RE = /^\s*import\s+([\w.]+(?:\s*,\s*[\w.]+)*)/gm;
 
 export function parseModulesPath(pathPattern: string): {
   parentDir: string;
@@ -57,7 +63,10 @@ export function checkImports(
   const issues: CheckIssue[] = [];
   const sourceFiles = files.filter(
     (f) =>
-      (JS_SOURCE_EXT.test(f) || PHP_SOURCE_EXT.test(f)) && !SKIP_DIR.test(f),
+      (JS_SOURCE_EXT.test(f) ||
+        PHP_SOURCE_EXT.test(f) ||
+        PY_SOURCE_EXT.test(f)) &&
+      !SKIP_DIR.test(f),
   );
 
   for (const file of sourceFiles) {
@@ -69,10 +78,11 @@ export function checkImports(
       continue;
     }
 
-    const isPhp = PHP_SOURCE_EXT.test(file);
-    const targets = isPhp
-      ? extractPhpImportTargets(content, files)
-      : extractJsImportTargets(file, content, files);
+    const targets = PY_SOURCE_EXT.test(file)
+      ? extractPyImportTargets(file, content, files)
+      : PHP_SOURCE_EXT.test(file)
+        ? extractPhpImportTargets(content, files)
+        : extractJsImportTargets(file, content, files);
 
     for (const target of targets) {
       const fromModule = modulesPath
@@ -147,6 +157,129 @@ function extractPhpImportTargets(content: string, files: string[]): string[] {
     if (target) out.push(target);
   }
   return out;
+}
+
+function extractPyImportTargets(
+  file: string,
+  content: string,
+  files: string[],
+): string[] {
+  const out: string[] = [];
+  for (const spec of extractPyImportSpecifiers(content)) {
+    const target = resolvePyImportToPath(file, spec, files);
+    if (target) out.push(target);
+  }
+  return out;
+}
+
+function extractPyImportSpecifiers(content: string): string[] {
+  const out: string[] = [];
+  PY_FROM_RE.lastIndex = 0;
+  let match: RegExpExecArray | null;
+  while ((match = PY_FROM_RE.exec(content)) !== null) {
+    out.push(match[1]!);
+  }
+  PY_IMPORT_RE.lastIndex = 0;
+  while ((match = PY_IMPORT_RE.exec(content)) !== null) {
+    const names = match[1]!.split(",").map((s) => s.trim().split(/\s+as\s+/)[0]!.trim());
+    for (const name of names) {
+      if (name) out.push(name);
+    }
+  }
+  return out;
+}
+
+/**
+ * Map a Python import specifier to a project-relative path (best-effort).
+ */
+export function resolvePyImportToPath(
+  fromFile: string,
+  specifier: string,
+  files: string[],
+): string | null {
+  if (!specifier || specifier === "__future__") return null;
+
+  // Relative: from .service / from ..domain.account_id
+  if (specifier.startsWith(".")) {
+    return resolvePyRelativeImport(fromFile, specifier, files);
+  }
+
+  // Absolute package path: apps.accounts.models → apps/accounts/models.py
+  const parts = specifier.split(".").filter(Boolean);
+  if (parts.length === 0) return null;
+
+  // Skip obvious stdlib / third-party top-levels unless they exist in the tree.
+  const root = parts[0]!;
+  const projectRoots = new Set([
+    "apps",
+    "features",
+    "domains",
+    "contexts",
+    "shared",
+    "config",
+    "api",
+    "services",
+    "models",
+    "schemas",
+    "repositories",
+    "domain",
+    "application",
+    "infrastructure",
+    "presentation",
+    "app",
+    "src",
+    "actions",
+    "readers",
+    "data",
+    "interfaces",
+    "core",
+  ]);
+  const fileSet = new Set(files);
+  if (!projectRoots.has(root)) {
+    const probe = joinPosix(parts) + ".py";
+    const probeInit = joinPosix([...parts, "__init__.py"]);
+    if (!fileSet.has(probe) && !fileSet.has(probeInit)) {
+      return null;
+    }
+  }
+
+  const candidates = [
+    joinPosix(parts) + ".py",
+    joinPosix([...parts, "__init__.py"]),
+  ];
+  for (const c of candidates) {
+    if (fileSet.has(c)) return c;
+  }
+  return candidates[0] ?? null;
+}
+
+function resolvePyRelativeImport(
+  fromFile: string,
+  specifier: string,
+  files: string[],
+): string | null {
+  let dots = 0;
+  while (specifier[dots] === ".") dots += 1;
+  const rest = specifier.slice(dots);
+  const fromDir = dirname(fromFile);
+  let base = fromDir;
+  // PEP 328: one leading dot = current package; each extra dot = parent.
+  for (let i = 1; i < dots; i += 1) {
+    base = dirname(base);
+  }
+  const parts = rest ? rest.split(".").filter(Boolean) : [];
+  const joined = joinPosix(
+    [...base.split("/").filter(Boolean), ...parts],
+  );
+  const fileSet = new Set(files);
+  const candidates = [
+    `${joined}.py`,
+    joinPosix([joined, "__init__.py"]),
+  ];
+  for (const c of candidates) {
+    if (fileSet.has(c)) return c;
+  }
+  return candidates[0] ?? null;
 }
 
 function extractImportSpecifiers(content: string): string[] {
@@ -257,11 +390,13 @@ function resolveRelativeImport(
     `${normalized}.mts`,
     `${normalized}.cts`,
     `${normalized}.php`,
+    `${normalized}.py`,
     `${normalized}/index.ts`,
     `${normalized}/index.tsx`,
     `${normalized}/index.js`,
     `${normalized}/index.jsx`,
     `${normalized}/index.php`,
+    `${normalized}/__init__.py`,
   ];
 
   const fileSet = new Set(files);

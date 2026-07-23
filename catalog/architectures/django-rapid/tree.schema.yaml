@@ -1,0 +1,27 @@
+roots:
+  required:
+    - actions/
+    - readers/
+    - data/
+    - interfaces/
+  optional:
+    - config/
+    - shared/
+    - docs/
+    - tooling/
+    - tests/
+    - manage.py
+
+shared:
+  path: shared/
+  allow:
+    - lib/**
+    - config/**
+    - types/**
+
+forbid:
+  - apps/**
+  - features/**
+  - domains/**
+
+allow_exceptions_file: architecture.exceptions.yaml

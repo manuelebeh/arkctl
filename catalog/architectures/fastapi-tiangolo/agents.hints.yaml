@@ -1,0 +1,7 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews Tiangolo-style app/api + crud + models boundaries
+
+brief: |
+  Follow the Tiangolo FastAPI template layout.
+  Routes in app/api/, CRUD in app/crud.py, models in app/models.py, config in app/core/.

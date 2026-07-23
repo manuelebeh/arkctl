@@ -24,13 +24,15 @@ import {
   requireInteractive,
 } from "../cli/prompts.js";
 import {
-  isLaravelStack,
-  LARAVEL_BOOTSTRAP_OPTIONS,
-  parseLaravelBootstrap,
-  parseLaravelDepth,
-  type LaravelBootstrapMethod,
-  type LaravelDepth,
-} from "../create/laravel-bootstrap.js";
+  bootstrapMethodHint,
+  bootstrapOptionsForStacks,
+  frameworkLabel,
+  parseBootstrapForStacks,
+  parseProjectDepth,
+  supportsDepthBootstrap,
+  type FrameworkBootstrapMethod,
+  type ProjectDepth,
+} from "../create/bootstrap.js";
 import { createProject } from "../create/scaffold.js";
 import {
   findStackGroup,
@@ -118,12 +120,12 @@ export const createCommand = defineCommand({
     depth: {
       type: "string",
       description:
-        "Laravel only: minimal (Ark skeleton) or full (bootstrap a real Laravel app)",
+        "Laravel/Django/FastAPI: minimal (Ark skeleton) or full (bootstrap a real app)",
     },
     bootstrap: {
       type: "string",
       description:
-        "Laravel full only: laravel-installer | composer | sail | ddev",
+        "Full depth only: stack-specific method (e.g. ddev, uv, host, poetry)",
     },
   },
   async run({ args }) {
@@ -354,11 +356,12 @@ export const createCommand = defineCommand({
 
     p.log.info(`Stacks: ${stacks.join(", ") || "(none)"}`);
 
-    let depth: LaravelDepth = "minimal";
-    let bootstrap: LaravelBootstrapMethod | undefined;
+    let depth: ProjectDepth = "minimal";
+    let bootstrap: FrameworkBootstrapMethod | undefined;
 
-    if (isLaravelStack(stacks)) {
-      const depthFromFlag = parseLaravelDepth(args.depth);
+    if (supportsDepthBootstrap(stacks)) {
+      const label = frameworkLabel(stacks);
+      const depthFromFlag = parseProjectDepth(args.depth);
       if (depthFromFlag) {
         depth = depthFromFlag;
       } else if (args.depth) {
@@ -377,31 +380,31 @@ export const createCommand = defineCommand({
             {
               value: "full",
               label: "Full",
-              hint: "Bootstrap a real Laravel app, then apply architecture",
+              hint: `Bootstrap a real ${label} app, then apply architecture`,
             },
           ],
         });
         exitIfCancelled(selected);
-        depth = selected as LaravelDepth;
+        depth = selected as ProjectDepth;
       }
 
       if (depth === "full") {
-        const bootFromFlag = parseLaravelBootstrap(args.bootstrap);
+        const bootOptions = bootstrapOptionsForStacks(stacks);
+        const hint = bootstrapMethodHint(stacks);
+        const bootFromFlag = parseBootstrapForStacks(stacks, args.bootstrap);
         if (bootFromFlag) {
           bootstrap = bootFromFlag;
         } else if (args.bootstrap) {
-          p.cancel(
-            `Invalid --bootstrap "${args.bootstrap}" (use laravel-installer, composer, sail, or ddev)`,
-          );
+          p.cancel(`Invalid --bootstrap "${args.bootstrap}" (use ${hint})`);
           process.exit(1);
         } else {
-          requireInteractive("--bootstrap laravel-installer|composer|sail|ddev");
+          requireInteractive(`--bootstrap ${hint}`);
           const selected = await p.select({
-            message: "Laravel bootstrap",
-            options: LARAVEL_BOOTSTRAP_OPTIONS,
+            message: `${label} bootstrap`,
+            options: bootOptions,
           });
           exitIfCancelled(selected);
-          bootstrap = selected as LaravelBootstrapMethod;
+          bootstrap = selected as FrameworkBootstrapMethod;
         }
         p.log.info(`Bootstrap: ${bootstrap}`);
       }
@@ -491,7 +494,7 @@ export const createCommand = defineCommand({
     const spinner = p.spinner();
     const initialMessage =
       depth === "full" && bootstrap
-        ? `Bootstrapping Laravel (${bootstrap})…`
+        ? `Bootstrapping ${frameworkLabel(stacks)} (${bootstrap})…`
         : agentIds.some(
               (id) =>
                 registry.agents.find((a) => a.id === id)?.source === "github",

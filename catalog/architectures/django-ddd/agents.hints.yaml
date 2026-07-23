@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews DDD layer boundaries
+
+brief: |
+  Follow Django modular DDD.
+  New bounded contexts go in domains/{domain}/ with domain, application, infrastructure.
+  Domain must not import infrastructure. Cross-domain access via application or shared.

@@ -1,0 +1,38 @@
+roots:
+  required:
+    - apps/
+  optional:
+    - config/
+    - shared/
+    - docs/
+    - tooling/
+    - tests/
+    - manage.py
+
+modules:
+  path: apps/:name
+  required_children:
+    - models.py
+    - apps.py
+    - services.py
+    - selectors.py
+  optional_children:
+    - views.py
+    - urls.py
+    - admin.py
+    - tests/
+  forbid:
+    - apps/:name/apps/
+
+shared:
+  path: shared/
+  allow:
+    - lib/**
+    - config/**
+    - types/**
+
+forbid:
+  - features/**
+  - domains/**
+
+allow_exceptions_file: architecture.exceptions.yaml

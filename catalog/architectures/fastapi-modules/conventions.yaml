@@ -1,0 +1,24 @@
+naming:
+  modules:
+    pattern: "^[a-z][a-z0-9_]*$"
+  files:
+    tests: "**/test_*.py"
+
+placement:
+  cross_module_imports: false
+  public_api: src/:name/service.py
+
+imports:
+  deny: []
+  allow:
+    - from: src/*
+      to: src/*/service.py
+    - from: src/*
+      to: src/*/router.py
+    - from: src/*
+      to: shared/**
+    - from: "**"
+      to: shared/**
+
+tests:
+  colocate: true

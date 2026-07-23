@@ -1,0 +1,9 @@
+# Copy to the project root as architecture.exceptions.yaml
+
+exceptions:
+  - code: denied-import
+    path: domains/accounts/domain/legacy_bridge.py
+    reason: "temporary bridge during migration"
+  - code: cross-module-import
+    path: domains/accounts/application/sync_orders.py
+    reason: "explicit anti-corruption layer"

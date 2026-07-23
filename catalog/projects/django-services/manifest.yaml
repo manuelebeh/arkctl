@@ -1,0 +1,20 @@
+schema_version: 1
+id: django-services
+name: Django app (services)
+version: 0.1.0
+description: Minimal Django services+selectors scaffold
+
+implements:
+  architecture: django-services
+  architecture_version: ">=0.1.0 <1.0.0"
+
+stack:
+  language: python
+  runtime: python
+  tags: [django, python]
+  file_map:
+    index: services.py
+    test_suffix: test_.py
+
+source:
+  root: ./template

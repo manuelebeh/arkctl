@@ -1,6 +1,6 @@
 schema_version: 1
 name: ark-default
-version: 0.4.0
+version: 0.5.0
 description: Built-in Ark catalog (architectures, project types, local + remote agents, presets)
 
 architectures:
@@ -50,6 +50,54 @@ architectures:
     name: Laravel modular DDD
     version: 0.1.0
     path: architectures/laravel-ddd
+    source: local
+
+  - id: django-apps
+    name: Django domain apps
+    version: 0.1.0
+    path: architectures/django-apps
+    source: local
+
+  - id: django-services
+    name: Django services + selectors
+    version: 0.1.0
+    path: architectures/django-services
+    source: local
+
+  - id: django-rapid
+    name: Django RAPID layers
+    version: 0.1.0
+    path: architectures/django-rapid
+    source: local
+
+  - id: django-ddd
+    name: Django modular DDD
+    version: 0.1.0
+    path: architectures/django-ddd
+    source: local
+
+  - id: fastapi-layered
+    name: FastAPI layered
+    version: 0.1.0
+    path: architectures/fastapi-layered
+    source: local
+
+  - id: fastapi-modules
+    name: FastAPI feature modules
+    version: 0.1.0
+    path: architectures/fastapi-modules
+    source: local
+
+  - id: fastapi-clean
+    name: FastAPI clean architecture
+    version: 0.1.0
+    path: architectures/fastapi-clean
+    source: local
+
+  - id: fastapi-tiangolo
+    name: FastAPI Tiangolo layout
+    version: 0.1.0
+    path: architectures/fastapi-tiangolo
     source: local
 
 projects:
@@ -124,6 +172,70 @@ projects:
     path: projects/laravel-ddd
     source: local
     stacks: [laravel, php]
+
+  - id: django-apps
+    name: Django app (apps)
+    version: 0.1.0
+    implements: django-apps
+    path: projects/django-apps
+    source: local
+    stacks: [django, python]
+
+  - id: django-services
+    name: Django app (services)
+    version: 0.1.0
+    implements: django-services
+    path: projects/django-services
+    source: local
+    stacks: [django, python]
+
+  - id: django-rapid
+    name: Django app (rapid)
+    version: 0.1.0
+    implements: django-rapid
+    path: projects/django-rapid
+    source: local
+    stacks: [django, python]
+
+  - id: django-ddd
+    name: Django app (ddd)
+    version: 0.1.0
+    implements: django-ddd
+    path: projects/django-ddd
+    source: local
+    stacks: [django, python]
+
+  - id: fastapi-layered
+    name: FastAPI app (layered)
+    version: 0.1.0
+    implements: fastapi-layered
+    path: projects/fastapi-layered
+    source: local
+    stacks: [fastapi, python]
+
+  - id: fastapi-modules
+    name: FastAPI app (modules)
+    version: 0.1.0
+    implements: fastapi-modules
+    path: projects/fastapi-modules
+    source: local
+    stacks: [fastapi, python]
+
+  - id: fastapi-clean
+    name: FastAPI app (clean)
+    version: 0.1.0
+    implements: fastapi-clean
+    path: projects/fastapi-clean
+    source: local
+    stacks: [fastapi, python]
+
+  - id: fastapi-tiangolo
+    name: FastAPI app (tiangolo)
+    version: 0.1.0
+    implements: fastapi-tiangolo
+    path: projects/fastapi-tiangolo
+    source: local
+    stacks: [fastapi, python]
 
 agents:
   # --- Local personas ---

@@ -1,0 +1,37 @@
+roots:
+  required:
+    - domains/
+    - shared/
+  optional:
+    - config/
+    - docs/
+    - tooling/
+    - tests/
+    - manage.py
+
+modules:
+  path: domains/:name
+  required_children:
+    - domain/
+    - application/
+    - infrastructure/
+  optional_children:
+    - tests/
+  forbid:
+    - domains/:name/domains/
+
+shared:
+  path: shared/
+  allow:
+    - lib/**
+    - config/**
+    - types/**
+  forbid_globs:
+    - shared/**/domain/**
+    - shared/**/infrastructure/**
+
+forbid:
+  - apps/**
+  - features/**
+
+allow_exceptions_file: architecture.exceptions.yaml

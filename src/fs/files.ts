@@ -64,7 +64,10 @@ export function copyTemplateDirMerge(
     }
 
     const relFromTemplate = relative(templateRoot, src).split("\\").join("/");
-    if (relFromTemplate === "composer.json") {
+    if (
+      relFromTemplate === "composer.json" ||
+      relFromTemplate === "pyproject.toml"
+    ) {
       continue;
     }
 
@@ -167,6 +170,81 @@ export function mergeComposerJson(targetPath: string, patchPath: string): void {
   writeFileSync(targetPath, `${JSON.stringify(target, null, 4)}\n`, "utf8");
 }
 
+/**
+ * Merge pack pyproject.toml [project].dependencies into an existing file.
+ * Adds missing dependency strings only (does not replace versions).
+ */
+export function mergePyprojectToml(
+  targetPath: string,
+  patchPath: string,
+): void {
+  if (!existsSync(targetPath) || !existsSync(patchPath)) return;
+
+  const target = readFileSync(targetPath, "utf8");
+  const patch = readFileSync(patchPath, "utf8");
+  const patchDeps = extractPyprojectDependencies(patch);
+  if (patchDeps.length === 0) return;
+
+  const targetDeps = extractPyprojectDependencies(target);
+  const existingNames = new Set(
+    targetDeps.map((d) => dependencyName(d).toLowerCase()),
+  );
+  const missing = patchDeps.filter(
+    (d) => !existingNames.has(dependencyName(d).toLowerCase()),
+  );
+  if (missing.length === 0) return;
+
+  const depsBlock = /dependencies\s*=\s*\[([\s\S]*?)\]/m;
+  const match = depsBlock.exec(target);
+  if (!match) {
+    // No dependencies table — append a minimal [project] dependencies list.
+    const addition = [
+      "",
+      "[project]",
+      "dependencies = [",
+      ...missing.map((d) => `  "${escapeTomlString(d)}",`),
+      "]",
+      "",
+    ].join("\n");
+    writeFileSync(targetPath, `${target.trimEnd()}\n${addition}`, "utf8");
+    return;
+  }
+
+  const inner = match[1] ?? "";
+  const trimmedInner = inner.trimEnd();
+  const needsNewline = trimmedInner.length > 0 && !trimmedInner.endsWith("\n");
+  const insert = missing.map((d) => `  "${escapeTomlString(d)}",`).join("\n");
+  const nextInner =
+    trimmedInner.length === 0
+      ? `\n${insert}\n`
+      : `${trimmedInner}${needsNewline ? "\n" : ""}${insert}\n`;
+  const next = `${target.slice(0, match.index)}dependencies = [${nextInner}]${target.slice(match.index + match[0].length)}`;
+  writeFileSync(targetPath, next, "utf8");
+}
+
+function extractPyprojectDependencies(content: string): string[] {
+  const match = /dependencies\s*=\s*\[([\s\S]*?)\]/m.exec(content);
+  if (!match) return [];
+  const inner = match[1] ?? "";
+  const out: string[] = [];
+  const re = /"([^"]+)"|'([^']+)'/g;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(inner)) !== null) {
+    out.push(m[1] ?? m[2] ?? "");
+  }
+  return out.filter(Boolean);
+}
+
+function dependencyName(spec: string): string {
+  const trimmed = spec.trim();
+  const match = /^([A-Za-z0-9_.-]+)/.exec(trimmed);
+  return match?.[1] ?? trimmed;
+}
+
+function escapeTomlString(value: string): string {
+  return value.replace(/\\/g, "\\\\").replace(/"/g, '\\"');
+}
+
 function mergeStringMap(
   target: JsonObject,
   patch: JsonObject,
@@ -237,11 +315,26 @@ export function copyDir(from: string, to: string): void {
   cpSync(from, to, { recursive: true });
 }
 
+const SKIP_WALK_DIRS = new Set([
+  "node_modules",
+  "dist",
+  "vendor",
+  ".git",
+  ".venv",
+  "venv",
+  "__pycache__",
+  ".pytest_cache",
+  ".mypy_cache",
+  ".ruff_cache",
+  ".tox",
+]);
+
 export function listFilesRecursive(root: string): string[] {
   const out: string[] = [];
 
   function walk(dir: string) {
     for (const entry of readdirSync(dir)) {
+      if (SKIP_WALK_DIRS.has(entry)) continue;
       const full = join(dir, entry);
       const st = statSync(full);
       if (st.isDirectory()) {

@@ -1,0 +1,8 @@
+recommended_agents:
+  - id: architecture-guardian
+    reason: Reviews services/selectors boundaries
+
+brief: |
+  Follow Django services + selectors.
+  Business writes go in services.py; reads in selectors.py.
+  Views should not embed ORM query logic.

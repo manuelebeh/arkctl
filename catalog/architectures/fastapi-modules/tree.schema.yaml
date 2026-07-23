@@ -1,0 +1,34 @@
+roots:
+  required:
+    - src/
+  optional:
+    - shared/
+    - docs/
+    - tooling/
+    - tests/
+    - alembic/
+
+modules:
+  path: src/:name
+  required_children:
+    - router.py
+    - service.py
+  optional_children:
+    - schemas.py
+    - models.py
+    - dependencies.py
+    - constants.py
+    - exceptions.py
+    - utils.py
+    - config.py
+    - tests/
+  forbid:
+    - src/:name/src/
+
+forbid:
+  - app/modules/**
+  - api/**
+  - presentation/**
+  - contexts/**
+
+allow_exceptions_file: architecture.exceptions.yaml
