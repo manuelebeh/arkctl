@@ -1,6 +1,8 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Reviews clean-architecture import rules
+  - id: python-best-practices
+    reason: Packaging, typing, venv/uv, pytest, Ruff/MyPy
 
 brief: |
   Follow Python clean architecture.

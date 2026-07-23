@@ -1,6 +1,8 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Reviews feature public API (Action.php)
+  - id: php-best-practices
+    reason: PSR-12, Composer, strict types, security, PHPUnit
 
 brief: |
   Follow vanilla PHP feature folders.

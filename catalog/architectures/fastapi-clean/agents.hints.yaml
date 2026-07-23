@@ -1,6 +1,8 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Reviews clean architecture import rules
+  - id: fastapi-best-practices
+    reason: Routers, Depends, Pydantic, async layering, OpenAPI
 
 brief: |
   Follow FastAPI clean architecture.

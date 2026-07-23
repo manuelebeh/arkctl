@@ -3,6 +3,10 @@ recommended_agents:
     reason: Implements a feature within feature-first boundaries
   - id: architecture-guardian
     reason: Reviews structure and imports against the architecture contract
+  - id: tanstack-spa
+    reason: TanStack Router/Query feature layout and generated clients
+  - id: tanstack-intent
+    reason: Discover and wire Agent Skills from intent-enabled npm packages
 
 brief: |
   Follow the feature-first architecture contract.

@@ -1,6 +1,10 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Reviews app boundaries against the architecture contract
+  - id: django-best-practices
+    reason: Django apps, settings, views, auth, security, testing
+  - id: django-orm
+    reason: Models, migrations, QuerySets, admin, transactions
 
 brief: |
   Follow Django domain apps.

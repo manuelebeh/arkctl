@@ -213,12 +213,17 @@ Après create avec ce preset : lancer `/setup-matt-pocock-skills` une fois dans 
 | `python-hexagonal` | python-hexagonal | `python` | Vanilla Python |
 | `python-feature` | python-feature | `python` | Vanilla Python |
 
-TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet.
+TanStack: `tanstack-spa` (guidelines) and `tanstack-intent` (tool-skill, runs `npx @tanstack/intent install`).
 
 ## Built-in local guidelines
 
 - `no-ai-slop`, `no-ai-slop-skill`, `llm-guidelines`, `codequality`, `clean-code` (all stacks)
 - Laravel pack: `laravel-best-practices`, `laravel-database` (stacks: `laravel`, `php`)
+- Django pack: `django-best-practices`, `django-orm` (stacks: `django`, `python`)
+- FastAPI pack: `fastapi-best-practices` (stacks: `fastapi`, `python`)
+- Vanilla Python: `python-best-practices` (stacks: `python`)
+- Vanilla PHP: `php-best-practices` (stacks: `php`)
+- TanStack: `tanstack-spa` (stacks: `react`, `web`, `typescript`); `tanstack-intent` tool-skill (stacks: `react`, `next`, `web`, `typescript`)
 
 ## Built-in remote agents
 
@@ -227,6 +232,7 @@ TanStack skills ship via npm (`@tanstack/intent`), not as Ark catalog agents yet
 - `hallmark`: [Nutlope/hallmark](https://github.com/Nutlope/hallmark)
 - `vercel-react-best-practices`, `vercel-composition-patterns`, `vercel-web-design-guidelines`, `vercel-react-native`: [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills)
 - `react-doctor`: [millionco/react-doctor](https://github.com/millionco/react-doctor) (tool-skill)
+- `tanstack-intent`: local tool-skill wrapping [`@tanstack/intent`](https://tanstack.com/intent)
 
 `karpathy` and `ponytail` share exclusive group `minimalism` (warning if both selected).
 

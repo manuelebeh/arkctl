@@ -1,6 +1,8 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Keeps importable code under src/
+  - id: python-best-practices
+    reason: Packaging, typing, venv/uv, pytest, Ruff/MyPy
 
 brief: |
   Follow the Python src/ package layout.

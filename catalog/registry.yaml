@@ -435,6 +435,90 @@ agents:
     install:
       merge_into: AGENTS.md
 
+  # --- Local Django pack (stack-filtered) ---
+  - id: django-best-practices
+    name: Django Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/django-best-practices
+    source: local
+    stacks: [django, python]
+    description: Django apps, settings, views, auth, security, testing
+    install:
+      merge_into: AGENTS.md
+
+  - id: django-orm
+    name: Django ORM
+    version: 0.1.0
+    kind: guidelines
+    path: agents/django-orm
+    source: local
+    stacks: [django, python]
+    description: Models, migrations, QuerySets, admin, transactions
+    install:
+      merge_into: AGENTS.md
+
+  # --- Local FastAPI pack (stack-filtered) ---
+  - id: fastapi-best-practices
+    name: FastAPI Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/fastapi-best-practices
+    source: local
+    stacks: [fastapi, python]
+    description: Routers, Depends, Pydantic, async layering, OpenAPI
+    install:
+      merge_into: AGENTS.md
+
+  # --- Local vanilla Python / PHP ---
+  - id: python-best-practices
+    name: Python Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/python-best-practices
+    source: local
+    stacks: [python]
+    description: Packaging, typing, venv/uv, pytest, Ruff/MyPy
+    install:
+      merge_into: AGENTS.md
+
+  - id: php-best-practices
+    name: PHP Best Practices
+    version: 0.1.0
+    kind: guidelines
+    path: agents/php-best-practices
+    source: local
+    stacks: [php]
+    description: PSR-12, Composer, strict types, security, PHPUnit
+    install:
+      merge_into: AGENTS.md
+
+  # --- Local TanStack (SPA guidelines + Intent tool-skill) ---
+  - id: tanstack-spa
+    name: TanStack SPA
+    version: 0.1.0
+    kind: guidelines
+    path: agents/tanstack-spa
+    source: local
+    stacks: [react, web, typescript]
+    description: TanStack Router/Query feature layout and generated clients
+    install:
+      merge_into: AGENTS.md
+
+  - id: tanstack-intent
+    name: TanStack Intent
+    version: 0.1.0
+    kind: tool-skill
+    path: agents/tanstack-intent
+    source: local
+    stacks: [react, next, web, typescript]
+    description: Discover and wire Agent Skills from intent-enabled npm packages
+    install:
+      target: .agents/skills/tanstack-intent
+      merge_into: AGENTS.md
+      post:
+        - npx --yes @tanstack/intent@latest install
+
   # --- Remote guidelines ---
   - id: karpathy
     name: Karpathy Guidelines

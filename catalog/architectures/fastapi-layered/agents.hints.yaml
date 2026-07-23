@@ -1,6 +1,8 @@
 recommended_agents:
   - id: architecture-guardian
     reason: Reviews layered api → services → repositories boundaries
+  - id: fastapi-best-practices
+    reason: Routers, Depends, Pydantic, async layering, OpenAPI
 
 brief: |
   Follow FastAPI layered layout.
